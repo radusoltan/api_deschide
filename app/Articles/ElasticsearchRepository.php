@@ -24,7 +24,7 @@ class ElasticsearchRepository implements ArticlesRepository
         return $this->buildCollection($items);
     }
 
-    private function searchOnElasticsearch(string $query = '')
+    private function searchOnElasticsearch(string $query = '', $locale = 'ro')
     {
         $model = new Article;
 
@@ -36,7 +36,7 @@ class ElasticsearchRepository implements ArticlesRepository
                     'bool' => [
                         'must' => [
                             ['match' => ['translations.title' => $query]],
-                            ['match' => ['translations.locale' => 'ro']]
+                            ['match' => ['translations.locale' => $locale]]
                         ]
                     ]
                 ],

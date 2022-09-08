@@ -100,7 +100,7 @@ class CategoryController extends Controller
 
         if (request('term')){
             // dump(request());
-            $results = $searchRepository->search(request('term'));
+            $results = $searchRepository->search(request('term'), request('locale'));
             return  CollectionHelper::paginate($results, 10);
         } else {
             return $category->articles()->paginate(10);
