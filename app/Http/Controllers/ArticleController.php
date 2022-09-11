@@ -160,9 +160,9 @@ class ArticleController extends Controller
         return $article->images()->get();
     }
 
-    public function addMultiple(){
+    public function getRelatedArticles(Article $article){
 
-
+        return $article->related()->get();
 
     }
 }

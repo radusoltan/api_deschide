@@ -32,6 +32,10 @@ class Article extends Model implements TranslatableContract
         return $this->belongsToMany(Image::class, 'article_images');
     }
 
+    public function related(){
+        return $this->belongsToMany($this,'related_articles','article_id','related_id');
+    }
+
     public function vzt(){
         return visits($this);
     }
