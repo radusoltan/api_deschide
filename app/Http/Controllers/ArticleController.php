@@ -168,9 +168,19 @@ class ArticleController extends Controller
 
     public function getPublishedArticles()
     {
-        return Article::query('article_translations')
+        return Article::query()
             ->join('article_translations','article_translations.article_id','=','articles.id')
             ->where('article_translations.status','=','P')
+            ->orderBy('articles.created_at','DESC')
+            ->paginate();
+    }
+
+    public function getPublishedArticlesByCategory(Category $category)
+    {
+        return Article::query()
+            ->join('article_translations','article_translations.article_id','=','articles.id')
+            ->where('article_translations.status','=','P')
+            ->where('articles.category_id', $category->id)
             ->orderBy('articles.created_at','DESC')
             ->paginate();
     }
