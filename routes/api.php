@@ -43,6 +43,7 @@ Route::group(['middleware'=>['auth:sanctum']], function(){
 
     //Articles
     Route::apiResource('/articles',ArticleController::class);
+    Route::get('/article/{article}/related',[ArticleController::class,'getRelatedArticles']);
 
     Route::get('/article/add',[ArticleController::class,'addMultiple']);
 
