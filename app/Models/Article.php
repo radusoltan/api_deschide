@@ -36,8 +36,20 @@ class Article extends Model implements TranslatableContract
         return $this->belongsToMany($this,'related_articles','article_id','related_id');
     }
 
+    public function gallery()
+    {
+        return $this->hasOne(Gallery::class);
+    }
+
     public function vzt(){
         return visits($this);
+    }
+
+    public static function getPublishedArticles()
+    {
+        return $this
+            ->join('article_translations','article_translations.article_id','=','articles.id')
+            ->where('article_translations.status','=','P');
     }
 
     public function toSearchArray(): array
