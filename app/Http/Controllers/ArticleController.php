@@ -165,4 +165,13 @@ class ArticleController extends Controller
         return $article->related()->get();
 
     }
+
+    public function getPublishedArticles()
+    {
+        return Article::query('article_translations')
+            ->join('article_translations','article_translations.article_id','=','articles.id')
+            ->where('article_translations.status','=','P')
+            ->orderBy('articles.created_at','DESC')
+            ->paginate();
+    }
 }
