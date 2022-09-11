@@ -27,6 +27,7 @@ Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
 Route::post('login',[AuthController::class,'login']);
 
 Route::get('published',[ArticleController::class,'getPublishedArticles']);
+Route::get('/published/{category}',[ArticleController::class,'getPublishedArticlesByCategory']);
 
 Route::group(['middleware'=>['auth:sanctum']], function(){
 
