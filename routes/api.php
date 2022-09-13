@@ -7,7 +7,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\ImageController;
 use App\Models\Rendition;
-use App\Articles\SearchRepository;
+use App\Search\ElasticsearchRepository;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,9 +31,7 @@ Route::get('/published/{category}',[ArticleController::class,'getPublishedArticl
 
 Route::group(['middleware'=>['auth:sanctum']], function(){
 
-    Route::get('/search', function(SearchRepository $searchRepo){
-        dump($searchRepo->search(request('q')));
-    });
+
 
     Route::post('/logout',[AuthController::class,'logout']);
 
@@ -47,8 +45,19 @@ Route::group(['middleware'=>['auth:sanctum']], function(){
     //Articles
     Route::apiResource('/articles',ArticleController::class);
     Route::get('/article/{article}/related',[ArticleController::class,'getRelatedArticles']);
-
+    Route::post('/article/{article}/related-add',[ArticleController::class,'addRelated']);
+    Route::post('/article/{article}/related-detach',[ArticleController::class,'relatedDetach']);
     Route::get('/article/add',[ArticleController::class,'addMultiple']);
+    Route::post('/articles/search', [ArticleController::class,'search']);
+
+    //Article set publish time
+    Route::post('/article/{article}/publish-time',[ArticleController::class,'setArticlePublishTime']);
+    Route::delete('/translation/{id}/delete-event',[ArticleController::class,'deleteTranslationEvent']);
+
+
+
+
+
 
     //Images
     Route::get('/article/{article}/images',[ArticleController::class, 'articleImages']);

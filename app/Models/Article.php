@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Astrotomic\Translatable\Contracts\Translatable as TranslatableContract;
 use Astrotomic\Translatable\Translatable;
+// use Laravel\Scout\Searchable;
 use App\Search\Searchable;
 
 class Article extends Model implements TranslatableContract
@@ -23,6 +24,11 @@ class Article extends Model implements TranslatableContract
         'related' => 'array'
     ];
     protected $observables = ['flash'];
+
+    public function getId()
+    {
+        return $this->id;
+    }
 
     public function category(){
       return $this->belongsTo(Category::class);
@@ -52,15 +58,20 @@ class Article extends Model implements TranslatableContract
             ->where('article_translations.status','=','P');
     }
 
+    public function getSearchIndex(){
+        return $this->getTable();
+    }
+
     public function toSearchArray(): array
     {
         return [
             'id' => $this->id,
             'category_id' => $this->category_id,
-            'translations' => $this->translations(),
+            'translations' => $this->translations()->get(),
             'is_flash'=> $this->is_flash,
             'is_alert' => $this->is_alert,
-            'is_breaking' => $this->is_breaking
+            'is_breaking' => $this->is_breaking,
+            'images' => $this->images()->get()
 
         ];
     }

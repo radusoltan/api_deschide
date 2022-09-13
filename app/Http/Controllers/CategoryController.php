@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use App\Articles\ElasticsearchRepository;
-use App\Helpers\CollectionHelper;
 
 class CategoryController extends Controller
 {
@@ -95,16 +93,17 @@ class CategoryController extends Controller
         ]);
     }
 
-    public function categoryArticles(Category $category, ElasticsearchRepository $searchRepository)
+    public function categoryArticles(Category $category)
     {
 
-        if (request('term')){
-            // dump(request());
-            $results = $searchRepository->search(request('term'), request('locale'));
-            return  CollectionHelper::paginate($results, 10);
-        } else {
-            return $category->articles()->paginate(10);
-        }
+        // if (request('term')){
+        //     // dump(request());
+        //     $results = $searchRepository->search(request('term'), request('locale'));
+        //     return  CollectionHelper::paginate($results, 10);
+        // } else {
+        //     return $category->articles()->paginate(10);
+        // }
+
 
         // if (request()->has('term')){
         //     // if (request('q') !== null) {
@@ -117,6 +116,8 @@ class CategoryController extends Controller
 
 
         // }
+
+        return $category->articles()->paginate(10);
 
     }
 }

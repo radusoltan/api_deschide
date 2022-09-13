@@ -1,8 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Articles;
-
+use App\Models\Article;
+use App\Search\ElasticsearchRepository;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -14,7 +14,10 @@ use App\Articles;
 |
 */
 
-Route::get('/', function () {
+Route::get('/', function (ElasticsearchRepository $elasticsearch) {
+    // $articles = \App\Models\Article::search(request('q'))->get();
+    // $response = $elasticsearch->getArticle(Article::find(1));
+    $elasticsearch;
     return ['Laravel' => app()->version()];
 });
 
