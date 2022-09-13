@@ -3,11 +3,9 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use App\Articles\EloquentSearchRepository;
-use App\Articles\SearchRepository;
+use App\Search\ElasticsearchRepository;
 use Elastic\Elasticsearch\Client;
 use Elastic\Elasticsearch\ClientBuilder;
-use App\Articles;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -18,33 +16,31 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        // dump('app service provider');
-        // $this->app->bind(SearchRepository::class, EloquentSearchRepository::class);
-        $this->app->bind(Articles\ArticlesRepository::class, function ($app) {
-        //     // This is useful in case we want to turn-off our
-        //     // search cluster or when deploying the search
-        //     // to a live, running application at first.
-            if (! config('services.search.enabled')) {
-                return new Articles\EloquentSearchRepository();
-            }
-
-            return new Articles\ElasticsearchRepository(
+        $this->app->bind(ElasticsearchRepository::class, function($app){
+            return new ElasticsearchRepository(
                 $app->make(Client::class)
             );
         });
 
-        $this->bindSearchClient();
+        $this->app->bind(Client::class,function(){
+            return ClientBuilder::create()
+            ->setHosts(['http://localhost:9200'])
+            ->setBasicAuthentication('elastic', 'YutC7Nzk_WHSGsQh6q5q')
+            ->build();
+        });
+
     }
 
     private function bindSearchClient()
     {
-        $this->app->bind(Client::class, function ($app) {
+        $this->app->bind(Client::class,function(){
             return ClientBuilder::create()
-                ->setHosts($app['config']->get('services.search.hosts'))
-                ->setBasicAuthentication('elastic', $app['config']->get('services.search.creds'))
-                ->build();
+            ->setHosts(['http://localhost:9200'])
+            ->setBasicAuthentication('elastic', 'YutC7Nzk_WHSGsQh6q5q')
+            ->build();
         });
     }
+
 
     /**
      * Bootstrap any application services.

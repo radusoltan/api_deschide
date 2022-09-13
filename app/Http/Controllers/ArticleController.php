@@ -8,6 +8,9 @@ use Illuminate\Support\Str;
 use App\Services\ImageService;
 use App\Models\Category;
 use App\Models\ArticleImages;
+use App\Search;
+use App\Models\ArticleTranslation;
+use Carbon\Carbon;
 
 class ArticleController extends Controller
 {
@@ -166,6 +169,19 @@ class ArticleController extends Controller
 
     }
 
+    public function addRelated(Article $article)
+    {
+        $article->related()->sync(request('related'));
+
+        return $article->related()->get();
+    }
+
+    public function relatedDetach(Article $article)
+    {
+        $article->related()->detach(request('id'));
+        return $article->related()->get();
+    }
+
     public function getPublishedArticles()
     {
         return Article::query()
@@ -183,5 +199,42 @@ class ArticleController extends Controller
             ->where('articles.category_id', $category->id)
             ->orderBy('articles.created_at','DESC')
             ->paginate();
+    }
+
+    public function search(Search\ElasticsearchRepository $repo){
+
+        if (request()->has('locale')){
+            app()->setLocale(request('locale'));
+        }
+
+        $locale = app()->getLocale();
+
+        $q = request('q');
+
+        // dd();
+
+        return $repo->search($q, $locale);
+    }
+
+    public function setArticlePublishTime(Request $request,Article $article)
+    {
+        app()->setLocale($request->get('locale'));
+        $dt = Carbon::parse($request->get('time'));
+        $translation = ArticleTranslation::where('locale',$request->get('locale'))
+            ->where('article_id',$article->id)
+            ->first();
+        $translation->publish_at = $dt;
+        $translation->save();
+
+        return $article;
+
+    }
+
+    public function deleteTranslationEvent($id)
+    {
+        $translation = ArticleTranslation::find($id);
+        $translation->publish_at = null;
+        $translation->save();
+        return Article::find($translation->article_id);
     }
 }

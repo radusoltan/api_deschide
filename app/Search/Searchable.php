@@ -2,36 +2,20 @@
 
 namespace App\Search;
 
-use Elastic\Elasticsearch\Client;
-use App\Search\ElasticsearchObserver;
+trait Searchable {
 
-trait Searchable
-{
-    public static function bootSearchable()
-    {
-        if (config('services.search.enabled')) {
-            static::observe(ElasticsearchObserver::class);
-        }
+    public static function bootSercheable(){
+        static::observe(ElasticSearchObserver::class);
     }
 
-    public function elasticsearchIndex(Client $elasticsearchClient)
+    public function elasticsearchIndex(Client $elastic)
     {
-        $elasticsearchClient->index([
-            'index' => $this->getTable(),
+        $elastic->index([
+            'index' => $this->getSearchIndex(),
             'type' => '_doc',
-            'id' => $this->getKey(),
-            'body' => $this->toSearchArray(),
+            'id' => $this->getId(),
+            'body' => $this->toSearchArray()
         ]);
     }
-
-    public function elasticsearchDelete(Client $elasticsearchClient)
-    {
-        $elasticsearchClient->delete([
-            'index' => $this->getTable(),
-            'type' => '_doc',
-            'id' => $this->getKey(),
-        ]);
-    }
-
     abstract public function toSearchArray(): array;
 }
