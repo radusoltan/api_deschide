@@ -14,12 +14,8 @@ return new class extends Migration
     public function up()
     {
         Schema::create('galleries', function (Blueprint $table) {
-            $table->foreignId('gallery_id')
-                ->references('id')
-                ->on('galleries');
-            $table->foreignId('image_id')
-                ->references('id')
-                ->on('images');
+            $table->id();
+            $table->timestamps();
         });
     }
 
