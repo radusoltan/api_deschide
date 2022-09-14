@@ -99,7 +99,8 @@ class ArticleController extends Controller
         return $category->articles()->create([
             'title' => $request->get('title'),
             'slug' => Str::slug($request->get('title')),
-            'category_id' => $category->id
+            'category_id' => $category->id,
+            'keywords' => []
         ]);
 
     }
