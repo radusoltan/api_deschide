@@ -3,8 +3,6 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use App\Models\Gallery;
-use App\Models\Image;
 
 return new class extends Migration
 {
@@ -15,10 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('gallery_images', function (Blueprint $table) {
+        Schema::create('authors', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Gallery::class);
-            $table->foreignIdFor(Image::class);
+            $table->string('email');
+            $table->string('facebook');
+            $table->timestamps();
         });
     }
 
@@ -29,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('gallery_images');
+        Schema::dropIfExists('authors');
     }
 };
