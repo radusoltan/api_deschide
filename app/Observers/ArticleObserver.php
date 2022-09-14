@@ -2,65 +2,65 @@
 
 namespace App\Observers;
 
-use App\Models\ArticleTranslation;
+use App\Models\Article;
 
 class ArticleObserver
 {
     /**
-     * Handle the ArticleTranslation "created" event.
+     * Handle the Article "created" event.
      *
-     * @param  \App\Models\ArticleTranslation  $articleTranslation
+     * @param  \App\Models\Article  $article
      * @return void
      */
-    public function created(ArticleTranslation $articleTranslation)
+    public function created(Article $article)
     {
         //
     }
 
-    public function flash(ArticleTranslation $articleTranslation){
-        dump($articleTranslation);
+    public function flash(Article $article){
+        dump($article);
     }
 
     /**
-     * Handle the ArticleTranslation "updated" event.
+     * Handle the Article "updated" event.
      *
-     * @param  \App\Models\ArticleTranslation  $articleTranslation
+     * @param  \App\Models\Article  $article
      * @return void
      */
-    public function updated(ArticleTranslation $articleTranslation)
-    {
-        //
-    }
-
-    /**
-     * Handle the ArticleTranslation "deleted" event.
-     *
-     * @param  \App\Models\ArticleTranslation  $articleTranslation
-     * @return void
-     */
-    public function deleted(ArticleTranslation $articleTranslation)
+    public function updated(Article $article)
     {
         //
     }
 
     /**
-     * Handle the ArticleTranslation "restored" event.
+     * Handle the Article "deleted" event.
      *
-     * @param  \App\Models\ArticleTranslation  $articleTranslation
+     * @param  \App\Models\Article  $article
      * @return void
      */
-    public function restored(ArticleTranslation $articleTranslation)
+    public function deleted(Article $article)
     {
         //
     }
 
     /**
-     * Handle the ArticleTranslation "force deleted" event.
+     * Handle the Article "restored" event.
      *
-     * @param  \App\Models\ArticleTranslation  $articleTranslation
+     * @param  \App\Models\Article  $article
      * @return void
      */
-    public function forceDeleted(ArticleTranslation $articleTranslation)
+    public function restored(Article $article)
+    {
+        //
+    }
+
+    /**
+     * Handle the Article "force deleted" event.
+     *
+     * @param  \App\Models\Article  $article
+     * @return void
+     */
+    public function forceDeleted(Article $article)
     {
         //
     }
