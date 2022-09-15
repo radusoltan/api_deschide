@@ -6,6 +6,9 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\ImageController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\RolesController;
+use App\Http\Controllers\PermissionsController;
 use App\Models\Rendition;
 use App\Search\ElasticsearchRepository;
 
@@ -55,7 +58,14 @@ Route::group(['middleware'=>['auth:sanctum']], function(){
     Route::delete('/translation/{id}/delete-event',[ArticleController::class,'deleteTranslationEvent']);
 
 
+    //USERS
+    Route::apiResource('/users', UserController::class);
 
+    //ROLES
+    Route::apiResource('/roles', RolesController::class);
+
+    //PERMISSIONS
+    Route::apiResource('/permissions', PermissionsController::class);
 
 
 
