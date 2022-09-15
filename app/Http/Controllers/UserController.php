@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -16,18 +17,9 @@ class UserController extends Controller
      */
     public function index()
     {
-        //
+        return User::with(['roles','permissions'])->paginate(10);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -37,7 +29,26 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password' => ['required', 'confirmed'],
+        ]);
+
+
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+        ]);
+
+        if ($request->has('selectedRoles')){
+           $user->assignRole($request->get('selectedRoles'));
+        }
+
+
+
+        return $user->with('roles')->get();
     }
 
     /**
@@ -51,16 +62,6 @@ class UserController extends Controller
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(User $user)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
@@ -82,6 +83,6 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        //
+        return $user->delete();
     }
 }

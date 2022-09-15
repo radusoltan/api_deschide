@@ -96,28 +96,7 @@ class CategoryController extends Controller
     public function categoryArticles(Category $category)
     {
 
-        // if (request('term')){
-        //     // dump(request());
-        //     $results = $searchRepository->search(request('term'), request('locale'));
-        //     return  CollectionHelper::paginate($results, 10);
-        // } else {
-        //     return $category->articles()->paginate(10);
-        // }
-
-
-        // if (request()->has('term')){
-        //     // if (request('q') !== null) {
-        //     //
-        //     //
-        //     // } else {
-        //     //     return $category->articles()->paginate(10);
-        //     // }
-
-
-
-        // }
-
-        return $category->articles()->paginate(10);
+        return $category->articles()->orderBy('created_at', 'DESC')->paginate(10);
 
     }
 }

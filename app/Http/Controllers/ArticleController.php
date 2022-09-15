@@ -61,7 +61,7 @@ class ArticleController extends Controller
      */
     public function update(Request $request, Article $article)
     {
-        app()->setLocale($request->lng);
+        app()->setLocale($request->get('lng'));
 
         $article->update([
             'title' => $request->title,
@@ -95,13 +95,43 @@ class ArticleController extends Controller
             'lng' => ['required', 'string'],
             'title' => ['required','string']
         ]);
-        app()->setLocale($request->get('lng'));
-        return $category->articles()->create([
-            'title' => $request->get('title'),
-            'slug' => Str::slug($request->get('title')),
-            'category_id' => $category->id,
-            'keywords' => []
-        ]);
+
+        $locale = $request->get('lng');
+        $title = $request->get('title');
+        $slug = Str::slug($title);
+        $keywords = $request->get('keywords');
+
+        try {
+            $article = $category->articles()->create([
+                'title' => $title,
+                'slug' => $slug,
+                'category_id' => $category->id,
+            ]);
+            // dump();
+            return $article;
+        } catch (\Exception $e){
+            // dump($article);
+            return response()->json($e);
+        }
+
+        // //check slug
+        // app()->setLocale($locale);
+        // $check = ArticleTranslation::where([
+        //     ['slug',$slug],
+        //     ['locale',$locale]
+        // ])->first();
+
+        // if (!$check){
+        //     return $category->articles()->create([
+        //         'title' => $title,
+        //         'slug' => $slug,
+        //         'category_id' => $category->id,
+        //     ]);
+        // } else {
+        //     return [
+        //         'error' => 'errors.messages.article.dublicate-title'
+        //     ];
+        // }
 
     }
 

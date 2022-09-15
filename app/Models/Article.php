@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Astrotomic\Translatable\Contracts\Translatable as TranslatableContract;
 use Astrotomic\Translatable\Translatable;
-// use Laravel\Scout\Searchable;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Search\Searchable;
 
 class Article extends Model implements TranslatableContract
@@ -14,6 +14,7 @@ class Article extends Model implements TranslatableContract
     use HasFactory;
     use Translatable;
     use Searchable;
+    use SoftDeletes;
 
     public $translatedAttributes = ['title', 'slug', 'lead', 'body','status', 'published_at'];
     protected $fillable = ['category_id', 'is_flash', 'is_alert', 'is_breaking'];
