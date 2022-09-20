@@ -17,7 +17,7 @@ class ImageService {
 
         $imageFile = ImageManager::make($file->getRealPath());
 
-        $destinationPath = public_path('storage/images/'.$name);
+        $destinationPath = storage_path('images/'.$name);
 
         $imageFile->save($destinationPath,100,'jpg');
 
@@ -37,12 +37,12 @@ class ImageService {
 
     public function saveImageThumbnails(Image $image){
 
-        $file = file_get_contents(public_path($image->path.'/'.$image->name));
+        $file = file_get_contents(storage_path($image->path.'/'.$image->name));
         $name = $image->name;
         $renditions = Rendition::all();
         foreach ($renditions as $rendition){
             $img = ImageManager::make($file);
-            $destinationPath = public_path('storage/images/thumbnails/');
+            $destinationPath = storage_path('storage/images/thumbnails/');
 
             $thumb = ImageThumbnail::where('rendition_id',$rendition->id)
                 ->where('image_id',$image->id)
@@ -65,8 +65,8 @@ class ImageService {
     public function crop(Image $image, Rendition $rendition,array $crop)
     {
         $name = $image->name;
-        $destinationPath = public_path('storage/images/thumbnails/');
-        $img = ImageManager::make(public_path('storage/images/').$image->name);
+        $destinationPath = storage_path('images/thumbnails/');
+        $img = ImageManager::make(storage_path('images/').$image->name);
 
         $width  = round($image->width / 100 * $crop['p']['width']);
         $height = round($image->height / 100 * $crop['p']['height']);
