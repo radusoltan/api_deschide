@@ -2,7 +2,10 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Models\Article;
+use App\Models\Category;
 use App\Search\ElasticsearchRepository;
+use App\Http\Controllers\Public\CategoryController;
+use App\Http\Controllers\Public\ArticleController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -14,18 +17,11 @@ use App\Search\ElasticsearchRepository;
 |
 */
 
-Route::get('/', function (ElasticsearchRepository $elasticsearch) {
-    // $articles = \App\Models\Article::search(request('q'))->get();
-    // $response = $elasticsearch->getArticle(Article::find(1));
-    $elasticsearch;
+Route::get('/', function () {
     return ['Laravel' => app()->version()];
 });
 
-// Route::get('/search', function(ArticlesRepository $articlesRepository){
-//     // dump(request()->has('q'));
-//     return request()->has('q')
-//         ? $articlesRepository->search(request('q'))
-//         : App\Models\Article::all();
-// });
+//public routes
+Route::get('/categories', [CategoryController::class,'getAllPublishedCategories']);
+Route::get('/published-articles',[ArticleController::class,'getAllPublishedArticles']);
 
-// require __DIR__.'/auth.php';
