@@ -22,12 +22,7 @@ class AppServiceProvider extends ServiceProvider
             );
         });
 
-        $this->app->bind(Client::class,function(){
-            return ClientBuilder::create()
-            ->setHosts(['http://localhost:9200'])
-            ->setBasicAuthentication('elastic', 'YutC7Nzk_WHSGsQh6q5q')
-            ->build();
-        });
+        $this->bindSearchClient();
 
     }
 
