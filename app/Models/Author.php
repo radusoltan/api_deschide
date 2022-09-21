@@ -15,6 +15,7 @@ class Author extends Model implements TranslatableContract
     public $translatedAttributes = [
         'first_name',
         'last_name',
+        'full_name',
         'slug'
     ];
 

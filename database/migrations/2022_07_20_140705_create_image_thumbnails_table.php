@@ -20,6 +20,7 @@ return new class extends Migration
             $table->foreignIdFor(Image::class);
             $table->foreignIdFor(Rendition::class);
             $table->string('path');
+            $table->json('coords')->nullable(true);
         });
     }
 

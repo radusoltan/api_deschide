@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Author;
+use App\Models\Article;
 use Illuminate\Http\Request;
 
 class AuthorController extends Controller
@@ -81,5 +82,12 @@ class AuthorController extends Controller
     public function destroy(Author $author)
     {
         //
+    }
+
+    public function addArticleAuthors(Article $article)
+    {
+
+        dump($article);
+
     }
 }
