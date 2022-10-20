@@ -1,0 +1,45 @@
+<?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
+use App\Models\Author;
+
+class AuthorsTableSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     *
+     * @return void
+     */
+    public function run()
+    {
+        app()->setLocale('ro');
+        $author = Author::create([
+            'email' => 'deschide@author.com',
+            'facebook' => 'DeschideMD',
+            'first_name' => 'Deschide',
+            'last_name' => 'Stirea',
+            'full_name' => 'Deschide Stirea',
+            'slug' => Str::slug('Deschide Stirea')
+        ]);
+
+        app()->setLocale('en');
+        $author->update([
+            'first_name' => 'Deschide',
+            'last_name' => 'News',
+            'full_name' => 'Deschide News',
+            'slug' => Str::slug('Deschide News')
+        ]);
+
+        app()->setlocale('ru');
+        $author->update([
+            'first_name' => 'Deschide',
+            'last_name' => 'Новости',
+            'full_name' => 'Deschide Новости',
+            'slug' => Str::slug('Deschide Новости')
+        ]);
+    }
+}

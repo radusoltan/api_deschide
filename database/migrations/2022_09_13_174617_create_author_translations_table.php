@@ -15,9 +15,9 @@ return new class extends Migration
     {
         Schema::create('author_translations', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('article_id')
+            $table->foreignId('author_id')
                 ->references('id')
-                ->on('articles')
+                ->on('authors')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
             $table->string('locale')->index();

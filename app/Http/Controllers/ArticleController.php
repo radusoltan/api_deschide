@@ -3,7 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Article;
+use App\Models\Author;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Str;
 use App\Services\ImageService;
 use App\Models\Category;
@@ -11,19 +15,22 @@ use App\Models\ArticleImages;
 use App\Search;
 use App\Models\ArticleTranslation;
 use Carbon\Carbon;
+use LaravelIdea\Helper\App\Models\_IH_Article_C;
+use LaravelIdea\Helper\App\Models\_IH_Author_C;
 
 class ArticleController extends Controller
 {
     private $service;
 
-    public function __construct(){
+    public function __construct()
+    {
         $this->service = new ImageService();
     }
 
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Article[]|Collection|_IH_Article_C
      */
     public function index()
     {
@@ -33,8 +40,8 @@ class ArticleController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @return Response
      */
     public function store(Request $request)
     {
@@ -44,8 +51,8 @@ class ArticleController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Article  $article
-     * @return \Illuminate\Http\Response
+     * @param Article $article
+     * @return Response
      */
     public function show(Article $article)
     {
@@ -55,9 +62,9 @@ class ArticleController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Article  $article
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param Article $article
+     * @return Article
      */
     public function update(Request $request, Article $article)
     {
@@ -74,15 +81,13 @@ class ArticleController extends Controller
         ]);
 
         return $article;
-
-
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Article  $article
-     * @return \Illuminate\Http\Response
+     * @param Article $article
+     * @return Response
      */
     public function destroy(Article $article)
     {
@@ -93,15 +98,18 @@ class ArticleController extends Controller
     {
         $request->validate([
             'lng' => ['required', 'string'],
-            'title' => ['required','string']
+            'title' => ['required', 'string']
         ]);
+
+
 
         $locale = $request->get('lng');
         $title = $request->get('title');
         $slug = Str::slug($title);
-        $keywords = $request->get('keywords');
+        // $keywords = $request->get('keywords');
 
         try {
+            app()->setLocale($locale);
             $article = $category->articles()->create([
                 'title' => $title,
                 'slug' => $slug,
@@ -109,98 +117,89 @@ class ArticleController extends Controller
             ]);
             // dump();
             return $article;
-        } catch (\Exception $e){
-            // dump($article);
-            return response()->json($e);
+        } catch (\Exception $e) {
+            if ($e->errorInfo[1] === 1062) {
+                return response()->json('Acest titlu exista deja');
+            }
         }
-
-        // //check slug
-        // app()->setLocale($locale);
-        // $check = ArticleTranslation::where([
-        //     ['slug',$slug],
-        //     ['locale',$locale]
-        // ])->first();
-
-        // if (!$check){
-        //     return $category->articles()->create([
-        //         'title' => $title,
-        //         'slug' => $slug,
-        //         'category_id' => $category->id,
-        //     ]);
-        // } else {
-        //     return [
-        //         'error' => 'errors.messages.article.dublicate-title'
-        //     ];
-        // }
-
     }
 
-    public function articleImages(Article $article){
+    public function articleImages(Article $article)
+    {
         $resp = [];
 
-        foreach ($article->images()->get() as $image){
+        foreach ($article->images()->get() as $image) {
 
-            $resp[]= [
-                'id'=> $image->getId(),
+            $resp[] = [
+                'id' => $image->getId(),
                 'name' => $image->getName(),
-                'path' => $image->getPath().'/'.$image->getName(),
+                'path' => $image->getPath() . '/' . $image->getName(),
                 'width' => $image->getWidth(),
                 'height' => $image->getHeight(),
-                'isMain' => $image->getArticleMainImage($article)===$image->getId() ?? null,
+                'isMain' => $image->getArticleMainImage($article) === $image->getId() ?? null,
                 'thumbs' => $image->getThumbnails(),
             ];
         }
-
-        // return $resp;
-        // dump($resp);
         return $resp;
     }
 
-    public function addArticleImages(Request $request, Article $article){
+    public function addArticleImages(Request $request, Article $article)
+    {
 
-
-
-        foreach ($request->images as $file){
+        foreach ($request->images as $file) {
 
             $image = $this->service->uploadImage($file);
 
-            if (!$article->images->contains($image)){
+            if (!$article->images->contains($image)) {
                 $article->images()->attach($image);
             }
         }
 
+        if ($article->images->count() === 1) {
 
-
-        if ($article->images->count() ===1){
             $image = $article->images()->first();
 
-            $mainImage = ArticleImages::where('article_id',$article->id)
-            ->where('image_id',$image->id)
-            ->first();
+            $mainImage = ArticleImages::where('article_id', $article->id)
+                ->where('image_id', $image->id)
+                ->first();
 
             $mainImage->setMain();
 
             $this->service->saveImageThumbnails($image);
-
         }
 
         return $article->images()->get();
-
     }
 
-    public function detachImages(Request $request,Article $article)
+
+    /**
+     * @param Request $request
+     * @param Article $article
+     *
+     * @return Collection
+     *
+    */
+    public function detachImages(Request $request, Article $article): Collection
     {
         $article->images()->detach($request->get('id'));
         return $article->images()->get();
     }
 
-    public function getRelatedArticles(Article $article){
+    /**
+     * @param Article $article
+     * @return Collection
+     */
+    public function getRelatedArticles(Article $article): Collection
+    {
 
         return $article->related()->get();
-
     }
 
-    public function addRelated(Article $article)
+    /**
+     * @param Article $article
+     * @return Collection
+     */
+    public function addRelated(Article $article): Collection
     {
         $article->related()->sync(request('related'));
 
@@ -213,28 +212,40 @@ class ArticleController extends Controller
         return $article->related()->get();
     }
 
-    public function getPublishedArticles()
+    /**
+     * @return LengthAwarePaginator
+     */
+    public function getPublishedArticles(): LengthAwarePaginator
     {
         return Article::query()
-            ->join('article_translations','article_translations.article_id','=','articles.id')
-            ->where('article_translations.status','=','P')
-            ->orderBy('articles.created_at','DESC')
+            ->join('article_translations', 'article_translations.article_id', '=', 'articles.id')
+            ->where('article_translations.status', '=', 'P')
+            ->orderBy('articles.created_at', 'DESC')
             ->paginate();
     }
 
-    public function getPublishedArticlesByCategory(Category $category)
+    /**
+     * @param Category $category
+     * @return Article[]|LengthAwarePaginator|\Illuminate\Pagination\LengthAwarePaginator|_IH_Article_C
+     */
+    public function getPublishedArticlesByCategory(Category $category): LengthAwarePaginator
     {
         return Article::query()
-            ->join('article_translations','article_translations.article_id','=','articles.id')
-            ->where('article_translations.status','=','P')
+            ->join('article_translations', 'article_translations.article_id', '=', 'articles.id')
+            ->where('article_translations.status', '=', 'P')
             ->where('articles.category_id', $category->id)
-            ->orderBy('articles.created_at','DESC')
+            ->orderBy('articles.created_at', 'DESC')
             ->paginate();
     }
 
-    public function search(Search\ElasticsearchRepository $repo){
+    /**
+     * @param Search\Article\ArticleRepository $repo
+     * @return Collection
+     */
+    public function search(Search\Article\ArticleRepository $repo): Collection
+    {
 
-        if (request()->has('locale')){
+        if (request()->has('locale')) {
             app()->setLocale(request('locale'));
         }
 
@@ -247,25 +258,42 @@ class ArticleController extends Controller
         return $repo->search($q, $locale);
     }
 
-    public function setArticlePublishTime(Request $request,Article $article)
+    /**
+     * @param Request $request
+     * @param Article $article
+     * @return Article
+     */
+    public function setArticlePublishTime(Request $request, Article $article): Article
     {
         app()->setLocale($request->get('locale'));
         $dt = Carbon::parse($request->get('time'));
-        $translation = ArticleTranslation::where('locale',$request->get('locale'))
-            ->where('article_id',$article->id)
+        $translation = ArticleTranslation::where('locale', $request->get('locale'))
+            ->where('article_id', $article->id)
             ->first();
         $translation->publish_at = $dt;
         $translation->save();
 
         return $article;
-
     }
 
-    public function deleteTranslationEvent($id)
+    /**
+     * @param $id
+     * @return Article
+     */
+    public function deleteTranslationEvent($id): Article
     {
         $translation = ArticleTranslation::find($id);
         $translation->publish_at = null;
         $translation->save();
         return Article::find($translation->article_id);
+    }
+
+    /**
+     * @param Article $article
+     * @return Collection
+     */
+    public function getAuthors(Article $article): Collection
+    {
+        return $article->authors()->get();
     }
 }

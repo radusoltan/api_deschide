@@ -25,3 +25,17 @@ Route::get('/', function () {
 Route::get('/categories', [CategoryController::class,'getAllPublishedCategories']);
 Route::get('/published-articles',[ArticleController::class,'getAllPublishedArticles']);
 
+//RSS
+//Route::feeds();
+Route::get('/rss',[\App\Http\Controllers\RssReaderController::class,'readRss']);
+
+// FACEBOOK
+Route::group(['prefix'=> 'login/facebook'], function (){
+    Route::get('/',[\App\Http\Controllers\FacebookController::class,'FacebookLogin'])->name('facebook-login');
+    Route::get('/callback',[\App\Http\Controllers\FacebookController::class,'handleProviderFacebookCallback'])->name('facebook-callback');
+});
+//Route::get('/post',[\App\Http\Controllers\FacebookController::class, 'postNews']);
+
+Route::get('/import',[\App\Http\Controllers\FacebookController::class, 'RssArticles']);
+//Route::get('/fb-user',[\App\Http\Controllers\GraphController::class,'retrieveUserProfile']);
+//Route::get('/fb-logout', [\App\Http\Controllers\GraphController::class,'deauthorize']);

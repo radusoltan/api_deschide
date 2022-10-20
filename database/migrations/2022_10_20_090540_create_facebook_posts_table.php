@@ -13,8 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('article_translations', function (Blueprint $table) {
-            $table->json('keywords')->after('body');
+        Schema::create('facebook_posts', function (Blueprint $table) {
+            $table->id();
+            $table->string('old_num');
+            $table->string('fb_id');
+            $table->timestamps();
         });
     }
 
@@ -25,8 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('article_translations', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('facebook_posts');
     }
 };

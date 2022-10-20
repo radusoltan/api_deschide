@@ -1,12 +1,14 @@
 <?php
 
-namespace App\Search;
+namespace App\Search\Category;
+
+use App\Models\Category;
 use Elastic\Elasticsearch\Client;
 use Illuminate\Support\Arr;
 use Illuminate\Database\Eloquent\Collection;
-use App\Models\Article;
 
-class ElasticsearchRepository {
+class CategoryRepository
+{
 
     /** @var \Elastic\Elasticsearch\Client */
     private $elasticsearch;
@@ -22,22 +24,20 @@ class ElasticsearchRepository {
         $items = $this->searchOnElastic($query, $locale);
 
         return $this->buildCollection($items);
-
-
     }
 
-    public function searchOnElastic(string $query = '',$locale)
+    public function searchOnElastic(string $query = '', $locale)
     {
-        $model = new Article;
+        $model = new Category;
         $items = $this->elasticsearch->search([
             'index' => $model->getSearchIndex(),
-            'type' => '_doc',
+            'type' => $model->getType(),
             'body' => [
                 'query' => [
                     'bool' => [
                         'must' => [
-                            [ 'match' => [ 'translations.title' => $query ] ],
-                            [ 'match' => [ 'translations.locale' => $locale ] ],
+                            ['match' => ['translations.title' => $query]],
+                            ['match' => ['translations.locale' => $locale]],
                         ]
                     ]
                 ]
@@ -47,19 +47,13 @@ class ElasticsearchRepository {
         return $items->asArray();
     }
 
-    public function buildCollection(array $items)//: Collection
+    public function buildCollection(array $items): Collection
     {
         $ids = Arr::pluck($items['hits']['hits'], '_id');
-        $articles = Article::findMany($ids)
+        $articles = Category::findMany($ids)
             ->sortBy(function ($article) use ($ids) {
                 return array_search($article->getKey(), $ids);
             });
-        // $res = [];
-        // foreach ($articles as $article){
-        //     $res[$article->getId()] = $article->title;
-        // }
-        // dump($res);
         return $articles;
     }
-
 }
