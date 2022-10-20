@@ -23,7 +23,7 @@ class CategoryObserver
     public function created(Category $category): void
     {
 
-        $category->elasticsearchIndex($this->elasticsearchClient);
+        // $category->elasticsearchIndex($this->elasticsearchClient);
     }
 
     /**
@@ -34,10 +34,10 @@ class CategoryObserver
      */
     public function updated(Category $category): void
     {
-        try {
-            $category->elasticsearchUpdate($this->elasticsearchClient);
-        } catch (ClientResponseException|MissingParameterException|ServerResponseException $e) {
-        }
+        // try {
+        //     $category->elasticsearchUpdate($this->elasticsearchClient);
+        // } catch (ClientResponseException|MissingParameterException|ServerResponseException $e) {
+        // }
     }
 
     /**
@@ -48,10 +48,10 @@ class CategoryObserver
      */
     public function deleted(Category $category): void
     {
-        try {
-            $category->elasticsearchDelete($this->elasticsearchClient);
-        } catch (ClientResponseException|MissingParameterException|ServerResponseException $e) {
-        }
+        // try {
+        //     $category->elasticsearchDelete($this->elasticsearchClient);
+        // } catch (ClientResponseException|MissingParameterException|ServerResponseException $e) {
+        // }
     }
 
     /**
@@ -73,9 +73,9 @@ class CategoryObserver
      */
     public function forceDeleted(Category $category): void
     {
-        try {
-            $category->elasticsearchDelete($this->elasticsearchClient);
-        } catch (ClientResponseException|MissingParameterException|ServerResponseException $e) {
-        }
+        // try {
+        //     $category->elasticsearchDelete($this->elasticsearchClient);
+        // } catch (ClientResponseException|MissingParameterException|ServerResponseException $e) {
+        // }
     }
 }
