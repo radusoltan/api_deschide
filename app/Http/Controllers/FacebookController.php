@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Article;
 use App\Models\Category;
+use App\Models\FacebookPost;
 use App\Services\ImportService;
 use Facebook\Exceptions\FacebookResponseException;
 use Facebook\Exceptions\FacebookSDKException;
@@ -23,7 +24,8 @@ class FacebookController extends Controller
     private $service;
     private $client;
 
-    public function __construct(ImportService $service, Client $client){
+    public function __construct(ImportService $service, Client $client)
+    {
 
         $this->facebook = new Facebook([
             'app_id' => env('FACEBOOK_APP_ID'),
@@ -35,39 +37,38 @@ class FacebookController extends Controller
 
         $this->helper = $this->facebook->getRedirectLoginHelper();
         $this->service = $service;
-
     }
 
     public function FacebookLogin()
     {
-        $permissions = ['email','publish_action,manage_pages','publish_pages']; // Optional permissions
+        $permissions = ['email', 'publish_action,manage_pages', 'publish_pages']; // Optional permissions
         $loginUrl = $this->helper->getLoginUrl(route('facebook-callback'), $permissions);
 
         return redirect($loginUrl);
     }
 
-    public function handleProviderFacebookCallback(){
-//        $helper = $this->facebook->getRedirectLoginHelper();
+    public function handleProviderFacebookCallback()
+    {
+        //        $helper = $this->facebook->getRedirectLoginHelper();
         try {
 
             $accessToken = $this->helper->getAccessToken();
             dd($accessToken);
 
-            if (! isset($accessToken)) {
+            if (!isset($accessToken)) {
                 if ($this->helper->getError()) {
-//                    header('HTTP/1.0 401 Unauthorized');
+                    //                    header('HTTP/1.0 401 Unauthorized');
                     echo "Error: " . $this->helper->getError() . "\n";
                     echo "Error Code: " . $this->helper->getErrorCode() . "\n";
                     echo "Error Reason: " . $this->helper->getErrorReason() . "\n";
                     echo "Error Description: " . $this->helper->getErrorDescription() . "\n";
                 } else {
-//                    header('HTTP/1.0 400 Bad Request');
+                    //                    header('HTTP/1.0 400 Bad Request');
                     echo 'Bad request';
                 }
                 exit;
             }
-
-        } catch (FacebookResponseException|FacebookSDKException $e){
+        } catch (FacebookResponseException | FacebookSDKException $e) {
             dump($e->getMessage());
         }
     }
@@ -75,61 +76,82 @@ class FacebookController extends Controller
     public function postNews($url, $title)
     {
 
-//        $user = Auth::user();
-//
-//        $token = $user->getFacebookToken();
+        //        $user = Auth::user();
+        //
+        //        $token = $user->getFacebookToken();
 
         $data = [
-            'message' => $title,
-            'link' => $url
+            'link' => trim((string) $url),
+            'message' => $title
         ];
 
+        // dump($data);
+
         try {
-//            $response = $this->facebook->get('/me?fields=id,email,accounts', $token)->getGraphUser();
+            //            $response = $this->facebook->get('/me?fields=id,email,accounts', $token)->getGraphUser();
             $response = $this->facebook->post('/507699295948485/feed', $data, self::TOKEN);
             return $response->getDecodedBody()['id'];
-        } catch (FacebookResponseException|FacebookSDKException $exception){
+        } catch (FacebookResponseException | FacebookSDKException $exception) {
             dump($exception);
         }
     }
 
-    public function RssArticles(){
-//        phpinfo();
-//        $this->service->getCategories();
+    public function RssArticles()
+    {
+        //        phpinfo();
+        //        $this->service->getCategories();
 
         $feed = simplexml_load_file('https://deschide.md/ro/feed');
         $namespaces = $feed->getDocNamespaces(true);
-        $items = [];
-
-//        $mongo = new \MongoDB\Driver\Manager("mongodb://localhost:27017");
-        $client = new \MongoDB\Client('mongodb://localhost:27017');
-//        $table = $db->fbautopost;
-
-        dump($client);
-
-//
-//
-//        $newscount = 4;
-//
-//        while ( $newscount >= 0 ){
-//            $this->importOldArticle($feed->channel->item[$newscount]);
-//            $newscount--;
-//        }
 
 
+
+        //
+        //
+        $newscount = 3;
+
+        while ($newscount >= 0) {
+
+            $article = $feed->channel->item[$newscount];
+
+            $title = trim($article->title);
+            $link = trim($article->link);
+
+            $fb_post = FacebookPost::where([
+                ['old_num', '=', $article->num]
+            ])->first();
+
+
+
+            if (!$fb_post) {
+                $fb_id = $this->postNews($link, $title);
+                $fb_post = FacebookPost::create([
+                    'old_num' => $article->num,
+                    'fb_id' => $fb_id
+                ]);
+
+                dump('Articolul // ' . $title . ' // a fost publicat pe Facebook');
+            } else {
+                dump('Articolul ' . $title . ' a fost deja publicat pe Facebook');
+            }
+
+
+            $newscount--;
+        }
     }
 
-    private function importOldArticle(SimpleXMLElement $item){
+    private function importOldArticle(SimpleXMLElement $item)
+    {
 
 
 
-        $res = \Http::get('https://deschide.md/api/articles/'.$item->num.'.json');
+        $res = \Http::get('https://deschide.md/api/articles/' . $item->num . '.json');
         $old = json_decode($res->body());
-//
-        if (property_exists($item,'section')){
-            $category = Category::where('old_number',$old->section->number)->first();
+        //
+        if (property_exists($item, 'section')) {
+            $category = Category::where('old_number', $old->section->number)->first();
             $article = Article::where('old_number', $old->number)->first();
-            if(!$article){
+            if (!$article) {
                 app()->setLocale($old->language);
                 $article = Article::create([
                     'title' => $old->title,
@@ -142,11 +164,10 @@ class FacebookController extends Controller
                     'old_number' => $old->number,
                     'category_id' => $category->getId(),
                     'status' => $old->status === 'Y' ? 'P' : 'S',
-//                    'share_id' => $this->postNews($old->url, $old->title)
+                    //                    'share_id' => $this->postNews($old->url, $old->title)
                 ]);
             }
             dump($article);
         }
     }
-
 }

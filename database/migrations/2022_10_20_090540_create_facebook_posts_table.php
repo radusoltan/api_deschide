@@ -15,6 +15,8 @@ return new class extends Migration
     {
         Schema::create('facebook_posts', function (Blueprint $table) {
             $table->id();
+            $table->string('old_num');
+            $table->string('fb_id');
             $table->timestamps();
         });
     }
