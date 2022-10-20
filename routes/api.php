@@ -9,6 +9,7 @@ use App\Http\Controllers\ImageController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RolesController;
 use App\Http\Controllers\PermissionsController;
+use App\Http\Controllers\AuthorController;
 use App\Models\Rendition;
 use App\Search\ElasticsearchRepository;
 
@@ -52,6 +53,7 @@ Route::group(['middleware'=>['auth:sanctum']], function(){
     Route::post('/article/{article}/related-detach',[ArticleController::class,'relatedDetach']);
     Route::get('/article/add',[ArticleController::class,'addMultiple']);
     Route::post('/articles/search', [ArticleController::class,'search']);
+//    Route::get('/article/{article}/authors', [ArticleController::class, 'getAuthors']);
 
     //Article set publish time
     Route::post('/article/{article}/publish-time',[ArticleController::class,'setArticlePublishTime']);
@@ -66,6 +68,11 @@ Route::group(['middleware'=>['auth:sanctum']], function(){
 
     //PERMISSIONS
     Route::apiResource('/permissions', PermissionsController::class);
+
+    //AUTHORS
+    Route::get('/article/{article}/authors',[AuthorController::class, 'getArticleAuthors']);
+    Route::post('/article/{article}/authors',[AuthorController::class, 'addArticleAuthors']);
+    Route::post('/authors/search', [AuthorController::class ,'search']);
 
 
 
@@ -83,4 +90,9 @@ Route::group(['middleware'=>['auth:sanctum']], function(){
     {
         return Rendition::all();
     });
+
+    Route::get('/post',[\App\Http\Controllers\FacebookController::class, 'postNews']);
+
+    Route::get('/import',[\App\Http\Controllers\FacebookController::class, 'RssArticles']);
+
 });

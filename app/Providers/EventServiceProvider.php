@@ -7,7 +7,13 @@ use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Event;
 use App\Models\Article;
+use App\Models\Author;
+use App\Models\Category;
 use App\Observers\ArticleObserver;
+use App\Observers\AuthorObserver;
+use App\Observers\CategoryObserver;
+use SocialiteProviders\Manager\SocialiteWasCalled;
+
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -17,8 +23,12 @@ class EventServiceProvider extends ServiceProvider
      * @var array<class-string, array<int, class-string>>
      */
     protected $listen = [
-        Registered::class => [
-            SendEmailVerificationNotification::class,
+//        Registered::class => [
+//            SendEmailVerificationNotification::class,
+//        ],
+        SocialiteWasCalled::class => [
+            // ... other providers
+            'SocialiteProviders\\Facebook\\FacebookExtendSocialite@handle',
         ],
     ];
 
@@ -27,9 +37,11 @@ class EventServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         Article::observe(ArticleObserver::class);
+        Author::observe(AuthorObserver::class);
+        Category::observe(CategoryObserver::class);
     }
 
     /**

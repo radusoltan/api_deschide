@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Author;
 use App\Models\Article;
 use Illuminate\Http\Request;
+use App\Search;
 
 class AuthorController extends Controller
 {
@@ -88,6 +89,28 @@ class AuthorController extends Controller
     {
 
         dump($article);
+
+    }
+
+    public function getArticleAuthors(Article $article)
+    {
+//        dump($article->authors()->get());
+        return $article->authors()->get();
+    }
+
+    public function search(Search\Author\AuthorRepository $authorRepository)
+    {
+        if (request()->has('locale')) {
+            app()->setLocale(request('locale'));
+        }
+
+        $locale = app()->getLocale();
+
+        $q = request('q');
+
+        // dd();
+
+        return $authorRepository->search($q, $locale);
 
     }
 }

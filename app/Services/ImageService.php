@@ -7,7 +7,6 @@ use App\Models\Image;
 use App\Models\Rendition;
 use Illuminate\Http\UploadedFile;
 use App\Models\ImageThumbnail;
-use Illuminate\Support\Facades\Storage;
 
 class ImageService {
 
@@ -38,7 +37,11 @@ class ImageService {
     public function saveImageThumbnails(Image $image){
 
         $file = file_get_contents(public_path($image->path.'/'.$image->name));
+
+
+
         $name = $image->name;
+        // dump($name);
         $renditions = Rendition::all();
         foreach ($renditions as $rendition){
             $img = ImageManager::make($file);
@@ -58,6 +61,8 @@ class ImageService {
                 ]);
             }
         }
+
+        // die;
 
 
     }
@@ -101,10 +106,9 @@ class ImageService {
 
     public function getThumbnails(Image $image)
     {
-        $thumbs = ImageThumbnail::where('image_id', $image->getId())
+        return ImageThumbnail::where('image_id', $image->getId())
             // ->join('renditions','image_thumbnails.rendition_id','=','renditions.id')
             ->get();
-        return $thumbs;
     }
 
 }

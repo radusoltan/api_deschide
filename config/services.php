@@ -35,5 +35,11 @@ return [
         'hosts' => explode(',', env('ELASTICSEARCH_HOSTS')),
         'creds' => env('ELASTICSEARCH_CREDS')
     ],
+    'facebook' => [
+        'client_id' => env('FACEBOOK_APP_ID'),
+        'client_secret' => env('FACEBOOK_APP_SECRET'),
+        'redirect' => env('FACEBOOK_REDIRECT_URI'),  // Your application route used to redirect users back to your app after authentication
+        'default_graph_version' => 'v15.0',
+    ],
 
 ];

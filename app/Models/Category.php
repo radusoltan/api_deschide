@@ -7,35 +7,52 @@ use Illuminate\Database\Eloquent\Model;
 use Astrotomic\Translatable\Contracts\Translatable as TranslatableContract;
 use Astrotomic\Translatable\Translatable;
 use App\Search\Searchable;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Category extends Model implements TranslatableContract
 {
     use HasFactory;
     use Translatable;
     use Searchable;
+
     public $translatedAttributes = ['title','slug'];
-    protected $fillable = ['in_menu'];
+    protected $fillable = ['in_menu','old_number'];
     protected $casts = [
         'in_menu' => 'boolean'
     ];
 
-    public function articles(){
+    /**
+     * @return HasMany
+     */
+    public function articles(): HasMany
+    {
         return $this->hasMany(Article::class);
     }
 
-    public function getSearchIndex(){
+    /**
+     * @return string
+     */
+    public function getSearchIndex(): string
+    {
         return $this->getTable();
     }
 
+    /**
+     * @return string
+     */
+    public function getId(): string
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return array
+     */
     public function toSearchArray(): array
     {
-        if ($this->in_menu){
-            return [
-                'id' => $this->id,
-                'translations' => $this->translations()->get()
-            ];
-        } else {
-            return [];
-        }
+        return [
+            'id' => $this->getId(),
+            'translations' => $this->translations()->get()
+        ];
     }
 }

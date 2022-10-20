@@ -20,7 +20,8 @@ class CategoryTableSeeder extends Seeder
             [
                 'ro' => [
                     'title' => 'Politic',
-                    'slug' => Str::slug('Politic')
+                    'slug' => Str::slug('Politic'),
+                    'old_number' => 1
                 ],
                 'ru' => [
                     'title' => 'Политика',
@@ -35,11 +36,11 @@ class CategoryTableSeeder extends Seeder
                 'ro' => [
                     'title' => 'Social',
                     'slug' => Str::slug('Social'),
-
+                    'old_number' => 2
                 ],
                 'ru' => [
                     'title' => 'Общество',
-                    'slug' => Str::slug('Общество'),
+                    'slug' => Str::slug('Общество')
                 ],
                 'en' => [
                     'title' => 'Social',
@@ -50,11 +51,12 @@ class CategoryTableSeeder extends Seeder
                 'ro' => [
                     'title' => 'Economic',
                     'slug' => Str::slug('Economic'),
+                    'old_number' => 3
 
                 ],
                 'ru' => [
                     'title' => 'Экономика',
-                    'slug' => Str::slug('Экономика'),
+                    'slug' => Str::slug('Экономика')
                 ],
                 'en' => [
                     'title' => 'Financial',
@@ -65,11 +67,11 @@ class CategoryTableSeeder extends Seeder
                 'ro' => [
                     'title' => 'Cultura',
                     'slug' => Str::slug('Cultura'),
-
+                    'old_number' => 7
                 ],
                 'ru' => [
                     'title' => 'Культура',
-                    'slug' => Str::slug('Культура'),
+                    'slug' => Str::slug('Культура')
                 ],
                 'en' => [
                     'title' => 'Cultural',
@@ -80,17 +82,78 @@ class CategoryTableSeeder extends Seeder
                 'ro' => [
                     'title' => 'Sport',
                     'slug' => Str::slug('Sport'),
+                    'old_number' => 8
 
                 ],
                 'ru' => [
                     'title' => 'Спорт',
-                    'slug' => Str::slug('Спорт'),
+                    'slug' => Str::slug('Спорт')
                 ],
                 'en' => [
                     'title' => 'Sport',
                     'slug' => Str::slug('Sport')
                 ]
-            ]
+            ],
+            [
+                'ro' => [
+                    'title' => 'Externe',
+                    'slug' => Str::slug('Externe'),
+                    'old_number' => 4
+                ],
+                'ru' => [
+                    'title' => 'B мире',
+                    'slug' => Str::slug('B мире')
+                ],
+                'en' => [
+                    'title' => 'International',
+                    'slug' => Str::slug('International')
+                ]
+            ],
+            [
+                'ro' => [
+                    'title' => 'Editorial',
+                    'slug' => Str::slug('Editorial'),
+                    'old_number' => 5
+                ],
+                'ru' => [
+                    'title' => 'мнения',
+                    'slug' => Str::slug('мнения')
+                ],
+                'en' => [
+                    'title' => 'Editorials',
+                    'slug' => Str::slug('Editorials'),
+                ]
+            ],
+            [
+                'ro' => [
+                    'title' => 'Investigații',
+                    'slug' => Str::slug('Investigații'),
+                    'old_number' => 6
+                ],
+                'ru' => [
+                    'title' => 'Pасследования',
+                    'slug' => Str::slug('Pасследования')
+                ],
+                'en' => [
+                    'title' => 'Investigations',
+                    'slug' => Str::slug('Investigations')
+                ]
+            ],
+            [
+                'ro' => [
+                    'title' => 'Anti-Fake',
+                    'slug' => Str::slug('Anti-Fake'),
+                    'old_number' => 26
+                ],
+                'ru' => [
+                    'title' => 'Anti-Fake',
+                    'slug' => Str::slug('Anti-Fake')
+                ],
+                'en' => [
+                    'title' => 'Anti-Fake',
+                    'slug' => Str::slug('Anti-Fake')
+                ]
+            ],
 
         ];
 
@@ -99,7 +162,8 @@ class CategoryTableSeeder extends Seeder
             $category = Category::create([
                 'in_menu' => true,
                 'title' => $cat[app()->getLocale()]['title'],
-                'slug' => $cat[app()->getLocale()]['slug']
+                'slug' => $cat[app()->getLocale()]['slug'],
+                'old_number' => $cat[app()->getLocale()]['old_number']
             ]);
 
             app()->setLocale('en');

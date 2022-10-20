@@ -2,6 +2,8 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Author;
+use App\Models\Category;
 use Illuminate\Console\Command;
 use App\Models\Article;
 use Elastic\Elasticsearch\Client;
@@ -22,7 +24,7 @@ class ReindexCommand extends Command
      */
     protected $description = 'Indexes all articles to Elasticsearch';
 
-    /** @var \Elasticsearch\Client */
+    /** @var Elastic\Elasticsearch\Client */
     private $elasticsearch;
 
     public function __construct(Client $elasticsearch)
@@ -51,6 +53,36 @@ class ReindexCommand extends Command
             ]);
             $this->output->write('.');
         }
+
+
+        $this->info('Indexing all Categories.');
+
+        foreach (Category::cursor() as $category){
+
+            $this->elasticsearch->index([
+                'index' => $category->getSearchIndex(),
+                'id' => $category->getId(),
+                'body' => $category->toSearchArray()
+            ]);
+
+            $this->output->write('. // ');
+
+        }
+
+        $this->info('Indexing all Categories.');
+
+        foreach (Author::cursor() as $category){
+
+            $this->elasticsearch->index([
+                'index' => $category->getSearchIndex(),
+                'id' => $category->getId(),
+                'body' => $category->toSearchArray()
+            ]);
+
+            $this->output->write('. // ');
+
+        }
+
         $this->info("\nDone!");
     }
 }

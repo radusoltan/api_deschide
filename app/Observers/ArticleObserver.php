@@ -3,9 +3,14 @@
 namespace App\Observers;
 
 use App\Models\Article;
+use Elastic\Elasticsearch\Client;
 
 class ArticleObserver
 {
+    public function __construct(private Client $elasticsearchClient)
+    {
+    }
+
     /**
      * Handle the Article "created" event.
      *
@@ -14,10 +19,11 @@ class ArticleObserver
      */
     public function created(Article $article)
     {
-        //
+        $article->elasticsearchIndex($this->elasticsearchClient);
     }
 
-    public function flash(Article $article){
+    public function flash(Article $article)
+    {
         dump($article);
     }
 
@@ -27,9 +33,9 @@ class ArticleObserver
      * @param  \App\Models\Article  $article
      * @return void
      */
-    public function updated(Article $article)
+    public function updated(Article $article): void
     {
-        //
+        $article->elasticsearchUpdate($this->elasticsearchClient);
     }
 
     /**
@@ -40,7 +46,7 @@ class ArticleObserver
      */
     public function deleted(Article $article)
     {
-        //
+        $article->elasticsearchDelete($this->elasticsearchClient);
     }
 
     /**
@@ -51,7 +57,7 @@ class ArticleObserver
      */
     public function restored(Article $article)
     {
-        //
+        $article->elasticsearchIndex($this->elasticsearchClient);
     }
 
     /**
@@ -62,6 +68,6 @@ class ArticleObserver
      */
     public function forceDeleted(Article $article)
     {
-        //
+        $article->elasticsearchDelete($this->elasticsearchClient);
     }
 }
