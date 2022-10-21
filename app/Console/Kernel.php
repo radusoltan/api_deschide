@@ -15,10 +15,9 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $url = 'http://api.deschide.md/import';
 
         // $schedule->exec("wget $url")->everyMinute();
-        $schedule->command('facebook:share')->everyFiveMinutes();
+        $schedule->command('facebook:share')->everyMinute();
     }
 
     /**
