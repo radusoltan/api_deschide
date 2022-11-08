@@ -9,5 +9,5 @@ class FacebookPost extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['old_num', 'fb_id'];
+    protected $fillable = ['old_num', 'fb_id', 'title'];
 }

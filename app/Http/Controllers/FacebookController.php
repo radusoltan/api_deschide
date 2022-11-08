@@ -117,9 +117,18 @@ class FacebookController extends Controller
             $title = trim($article->title);
             $link = trim($article->link);
 
-            $fb_post = FacebookPost::where([
-                ['old_num', '=', $article->num]
-            ])->first();
+
+
+            $fb_post = FacebookPost::query()
+                // ->where([
+                //     ['old_num', '=', $article->num]
+                // ])
+                ->whereFullText('title', $title)
+                ->first();
+            dump($fb_post);
+            // $fb_post = FacebookPost::where([
+            //     ['old_num', '=', $article->num]
+            // ])->first();
 
 
 
@@ -127,7 +136,8 @@ class FacebookController extends Controller
                 $fb_id = $this->postNews($link, $title);
                 $fb_post = FacebookPost::create([
                     'old_num' => $article->num,
-                    'fb_id' => $fb_id
+                    'fb_id' => $fb_id,
+                    'title' => $title
                 ]);
 
                 dump('Articolul // ' . $title . ' // a fost publicat pe Facebook');
@@ -138,6 +148,8 @@ class FacebookController extends Controller
 
             $newscount--;
         }
+
+        // die;
     }
 
     private function importOldArticle(SimpleXMLElement $item)
