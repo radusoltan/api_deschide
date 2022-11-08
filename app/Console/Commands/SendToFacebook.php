@@ -76,9 +76,9 @@ class SendToFacebook extends Command
             //         ->first();
 
             $fb_post = FacebookPost::query()
-                // ->where([
-                //     ['old_num', '=', $article->num]
-                // ])
+                ->where([
+                    ['old_num', '=', $article->num]
+                ])
                 ->whereFullText('title', $title)
                 ->first();
 
