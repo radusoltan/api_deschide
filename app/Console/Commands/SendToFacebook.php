@@ -55,6 +55,8 @@ class SendToFacebook extends Command
         $this->info('Posting on Facebook...');
         $feed = simplexml_load_file('https://deschide.md/ro/feed');
 
+        dd($feed);
+
         $newscount = 3;
 
         while ($newscount >= 0) {
@@ -66,17 +68,34 @@ class SendToFacebook extends Command
             $title = trim($article->title);
             $link = trim($article->link);
 
-            $fb_post = FacebookPost::where([
-                [
-                    'old_num', '=', $article->num
-                ]
-            ])->first();
+            //     $fb_post = FacebookPost::query()
+            //         ->where([
+            //             'old_num', '=', $article->num
+            //         ])
+            //         ->whereFullText('facebook_posts' . 'title', $title)
+            //         ->first();
+
+            $fb_post = FacebookPost::query()
+                ->where([
+                    ['old_num', '=', $article->num]
+                ])
+                ->whereFullText('title', $title)
+                ->first();
+
+            //     // dump($fb_post);
+
+            //     // $fb_post = FacebookPost::where([
+            //     //     [
+            //     //         'old_num', '=', $article->num
+            //     //     ]
+            //     // ])->first();
 
             if (!$fb_post) {
                 $fb_id = $this->postNews($link, $title);
                 $fb_post = FacebookPost::create([
                     'old_num' => $article->num,
-                    'fb_id' => $fb_id
+                    'fb_id' => $fb_id,
+                    'title' => $title
                 ]);
 
                 dump('Articolul // ' . $title . ' // a fost publicat pe Facebook');
@@ -88,6 +107,7 @@ class SendToFacebook extends Command
 
             $newscount--;
         }
+        die;
     }
 
     private function postNews($link, $title)

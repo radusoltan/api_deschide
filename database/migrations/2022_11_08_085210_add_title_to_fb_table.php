@@ -13,12 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('facebook_posts', function (Blueprint $table) {
-            $table->id();
-            $table->string('old_num');
-            $table->string('fb_id');
+        Schema::table('facebook_posts', function (Blueprint $table) {
             $table->text('title')->fullText();
-            $table->timestamps();
         });
     }
 
@@ -29,6 +25,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('facebook_posts');
+        Schema::table('facebook_posts', function (Blueprint $table) {
+            $table->dropColumn('title');
+        });
     }
 };
