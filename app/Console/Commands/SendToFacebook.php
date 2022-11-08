@@ -107,7 +107,7 @@ class SendToFacebook extends Command
 
             $newscount--;
         }
-        die;
+        // die;
     }
 
     private function postNews($link, $title)
