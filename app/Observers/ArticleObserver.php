@@ -7,6 +7,9 @@ use Elastic\Elasticsearch\Client;
 
 class ArticleObserver
 {
+    /**
+     * @param Client $elasticsearchClient
+     */
     public function __construct(private Client $elasticsearchClient)
     {
     }
@@ -14,12 +17,13 @@ class ArticleObserver
     /**
      * Handle the Article "created" event.
      *
-     * @param  \App\Models\Article  $article
+     * @param Article $article
      * @return void
      */
     public function created(Article $article)
     {
-        // $article->elasticsearchIndex($this->elasticsearchClient);
+//        dd($article);
+         $article->elasticsearchIndex($this->elasticsearchClient);
     }
 
     public function flash(Article $article)
@@ -30,7 +34,7 @@ class ArticleObserver
     /**
      * Handle the Article "updated" event.
      *
-     * @param  \App\Models\Article  $article
+     * @param Article $article
      * @return void
      */
     public function updated(Article $article): void
@@ -41,7 +45,7 @@ class ArticleObserver
     /**
      * Handle the Article "deleted" event.
      *
-     * @param  \App\Models\Article  $article
+     * @param Article $article
      * @return void
      */
     public function deleted(Article $article)
@@ -52,18 +56,19 @@ class ArticleObserver
     /**
      * Handle the Article "restored" event.
      *
-     * @param  \App\Models\Article  $article
+     * @param Article $article
      * @return void
      */
     public function restored(Article $article)
     {
+        dd($article);
         // $article->elasticsearchIndex($this->elasticsearchClient);
     }
 
     /**
      * Handle the Article "force deleted" event.
      *
-     * @param  \App\Models\Article  $article
+     * @param Article $article
      * @return void
      */
     public function forceDeleted(Article $article)

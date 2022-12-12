@@ -47,7 +47,7 @@ class ReindexCommand extends Command
             // dd($article->toSearchArray());
             $this->elasticsearch->index([
                 'index' => $article->getSearchIndex(),
-                // 'type' => $article->getSearchType(),
+                 'type' => $article->getType(),
                 'id' => $article->getId(),
                 'body' => $article->toSearchArray()
             ]);
@@ -55,34 +55,6 @@ class ReindexCommand extends Command
         }
 
 
-        $this->info('Indexing all Categories.');
 
-        foreach (Category::cursor() as $category){
-
-            $this->elasticsearch->index([
-                'index' => $category->getSearchIndex(),
-                'id' => $category->getId(),
-                'body' => $category->toSearchArray()
-            ]);
-
-            $this->output->write('. // ');
-
-        }
-
-        $this->info('Indexing all Categories.');
-
-        foreach (Author::cursor() as $category){
-
-            $this->elasticsearch->index([
-                'index' => $category->getSearchIndex(),
-                'id' => $category->getId(),
-                'body' => $category->toSearchArray()
-            ]);
-
-            $this->output->write('. // ');
-
-        }
-
-        $this->info("\nDone!");
     }
 }

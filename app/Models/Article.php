@@ -2,16 +2,16 @@
 
 namespace App\Models;
 
+use App\Models\Traits\Searchable;
+use Astrotomic\Translatable\Contracts\Translatable as TranslatableContract;
+use Astrotomic\Translatable\Translatable;
 use Awssat\Visits\Visits;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Astrotomic\Translatable\Contracts\Translatable as TranslatableContract;
-use Astrotomic\Translatable\Translatable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Search\Searchable;
 
 class Article extends Model implements TranslatableContract
 {
@@ -21,7 +21,7 @@ class Article extends Model implements TranslatableContract
     use SoftDeletes;
 
 
-    public $translatedAttributes = ['title', 'slug', 'lead', 'body', 'status', 'published_at'];
+    public array $translatedAttributes = ['title', 'slug', 'lead', 'body', 'status', 'published_at'];
 
     protected $fillable = ['category_id', 'is_flash', 'is_alert', 'is_breaking', 'old_num'];
 
@@ -34,9 +34,10 @@ class Article extends Model implements TranslatableContract
 
     protected $observables = ['flash'];
 
-    public function getId()
+    public function getSearchIndex(): string
     {
-        return $this->id;
+        return $this->getTable();
+
     }
 
     public function category(): BelongsTo
@@ -71,8 +72,7 @@ class Article extends Model implements TranslatableContract
 
     public static function getPublishedArticles(): Article
     {
-        return $this
-            ->join('article_translations', 'article_translations.article_id', '=', 'articles.id')
+        return $this->join('article_translations', 'article_translations.article_id', '=', 'articles.id')
             ->where('article_translations.status', '=', 'P');
     }
 
@@ -85,7 +85,8 @@ class Article extends Model implements TranslatableContract
             'is_flash' => $this->is_flash,
             'is_alert' => $this->is_alert,
             'is_breaking' => $this->is_breaking,
-            'images' => $this->images()->get()
+            'images' => $this->images()->get(),
+            'authors' => $this->authors()->get()
         ];
     }
 }

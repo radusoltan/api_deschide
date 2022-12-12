@@ -33,7 +33,8 @@ return [
     'search' => [
         'enabled' => env('ELASTICSEARCH_ENABLED', false),
         'hosts' => explode(',', env('ELASTICSEARCH_HOSTS')),
-        'creds' => env('ELASTICSEARCH_CREDS')
+        'user' => env('ELASTICSEARCH_USER'),
+        'pass' => env('ELASTICSEARCH_PASS')
     ],
     'facebook' => [
         'client_id' => env('FACEBOOK_APP_ID'),
