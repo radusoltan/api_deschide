@@ -33,6 +33,14 @@ Route::post('login',[AuthController::class,'login']);
 Route::get('published',[ArticleController::class,'getPublishedArticles']);
 Route::get('/published/{category}',[ArticleController::class,'getPublishedArticlesByCategory']);
 
+Route::get('/search', function(\App\Repositories\ArticleRepository $articleRepository){
+
+
+    return $articleRepository->search(request('q'), request('locale'));
+//    return $articleRepository->search();
+
+});
+
 Route::group(['middleware'=>['auth:sanctum']], function(){
 
 

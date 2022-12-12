@@ -2,9 +2,10 @@
 
 namespace App\Providers;
 
+use App\Observers\ArticleObserver;
 use Illuminate\Support\ServiceProvider;
 use App\Search\Author\AuthorRepository;
-use App\Search\Article\ArticleRepository;
+use App\Repositories\ArticleRepository;
 use App\Search\Category\CategoryRepository;
 use Elastic\Elasticsearch\Client;
 use Elastic\Elasticsearch\ClientBuilder;
@@ -18,22 +19,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->bind(AuthorRepository::class, function ($app) {
-            return new AuthorRepository(
-                $app->make(Client::class)
-            );
-        });
+        $this->app->bind(ArticleRepository::class, function ($app){
 
-        $this->app->bind(ArticleRepository::class, function ($app) {
             return new ArticleRepository(
                 $app->make(Client::class)
             );
-        });
 
-        $this->app->bind(CategoryRepository::class, function ($app) {
-            return new CategoryRepository(
-                $app->make(Client::class)
-            );
         });
 
         $this->bindSearchClient();
@@ -43,8 +34,8 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->bind(Client::class, function () {
             return ClientBuilder::create()
-                ->setHosts(['http://localhost:9200'])
-                ->setBasicAuthentication('elastic', 'YutC7Nzk_WHSGsQh6q5q')
+                ->setHosts([env('ELASTICSEARCH_HOST')])
+                ->setBasicAuthentication(env('ELASTICSEARCH_USER'), env('ELASTICSEARCH_PASS'))
                 ->build();
         });
     }
