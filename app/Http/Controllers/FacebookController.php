@@ -27,16 +27,16 @@ class FacebookController extends Controller
     public function __construct(ImportService $service, Client $client)
     {
 
-        $this->facebook = new Facebook([
-            'app_id' => env('FACEBOOK_APP_ID'),
-            'app_secret' => env('FACEBOOK_APP_SECRET'),
-            'default_graph_version' => 'v15.0',
-        ]);
+//        $this->facebook = new Facebook([
+//            'app_id' => env('FACEBOOK_APP_ID'),
+//            'app_secret' => env('FACEBOOK_APP_SECRET'),
+//            'default_graph_version' => 'v15.0',
+//        ]);
 
-        $this->client = new Client();
-
-        $this->helper = $this->facebook->getRedirectLoginHelper();
-        $this->service = $service;
+//        $this->client = new Client();
+//
+//        $this->helper = $this->facebook->getRedirectLoginHelper();
+//        $this->service = $service;
     }
 
     public function FacebookLogin()

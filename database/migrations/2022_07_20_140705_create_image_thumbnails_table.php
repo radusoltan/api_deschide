@@ -19,6 +19,8 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(Image::class);
             $table->foreignIdFor(Rendition::class);
+            $table->integer('width')->nullable(true);
+            $table->integer('height')->nullable(true);
             $table->string('path');
             $table->json('coords')->nullable(true);
         });

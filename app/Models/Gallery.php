@@ -11,6 +11,11 @@ class Gallery extends Model
 
     public function article()
     {
-        return $this->belongsTo(Article::class);
+        return $this->belongsToMany(Article::class, 'article_galleries','article_id','id');
+    }
+
+    public function images()
+    {
+        return $this->belongsToMany(Image::class,'gallery_images','image_id','id');
     }
 }

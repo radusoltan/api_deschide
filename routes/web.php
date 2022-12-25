@@ -23,6 +23,7 @@ Route::get('/', function () {
 
 //public routes
 Route::get('/categories', [CategoryController::class,'getAllPublishedCategories']);
+//Route::get('/category/{slug}',[CategoryController::class,'getCategory']);
 Route::get('/published-articles',[ArticleController::class,'getAllPublishedArticles']);
 
 //RSS

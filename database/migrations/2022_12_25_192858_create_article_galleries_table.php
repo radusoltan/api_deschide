@@ -13,19 +13,19 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('author_translations', function (Blueprint $table) {
+        Schema::create('article_galleries', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('author_id')
+            $table->foreignId('article_id')
                 ->references('id')
-                ->on('authors')
+                ->on('articles')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
-            $table->string('locale')->index();
-            $table->string('first_name');
-            $table->string('last_name');
-            $table->string('full_name')->fulltext();
-            $table->string('slug');
-            $table->unique(['locale','slug']);
+            $table->foreignId('gallery_id')
+                ->references('id')
+                ->on('galleries')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+//            $table->timestamps();
         });
     }
 
@@ -36,6 +36,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('author_translations');
+        Schema::dropIfExists('article_galleries');
     }
 };

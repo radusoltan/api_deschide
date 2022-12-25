@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Article;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
@@ -29,6 +30,15 @@ Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
 });
 
 Route::post('login',[AuthController::class,'login']);
+
+Route::group(['prefix' => 'public'], function (){
+    Route::get('home',[\App\Http\Controllers\Public\HomepageController::class,'getInitialProps']);
+    Route::get('categories', [\App\Http\Controllers\Public\CategoryController::class, 'getAllPublishedCategories']);
+    Route::get('category/{slug}',[\App\Http\Controllers\Public\CategoryController::class,'getCategory']);
+    Route::get('category/{category}/articles',[\App\Http\Controllers\Public\CategoryController::class,'getCategoryPublishedArticles']);
+    Route::get('articles',[\App\Http\Controllers\Public\ArticleController::class,'getAllPublishedArticles']);
+    Route::get('/article/{slug}',[\App\Http\Controllers\Public\ArticleController::class,'getArticle']);
+});
 
 Route::get('published',[ArticleController::class,'getPublishedArticles']);
 Route::get('/published/{category}',[ArticleController::class,'getPublishedArticlesByCategory']);
@@ -61,6 +71,16 @@ Route::group(['middleware'=>['auth:sanctum']], function(){
     Route::post('/article/{article}/related-detach',[ArticleController::class,'relatedDetach']);
     Route::get('/article/add',[ArticleController::class,'addMultiple']);
     Route::post('/articles/search', [ArticleController::class,'search']);
+
+    Route::patch('/articles/{article}/flash', function (Article $article){
+        return $article->setIsFlash();
+    });
+    Route::patch('/articles/{article}/alert', function (Article $article){
+        return $article->setIsAlert();
+    });
+    Route::patch('/articles/{article}/breaking', function (Article $article){
+        return $article->setIsBreaking();
+    });
 //    Route::get('/article/{article}/authors', [ArticleController::class, 'getAuthors']);
 
     //Article set publish time
@@ -78,9 +98,11 @@ Route::group(['middleware'=>['auth:sanctum']], function(){
     Route::apiResource('/permissions', PermissionsController::class);
 
     //AUTHORS
+    Route::get('/authors',[AuthorController::class, 'index']);
     Route::get('/article/{article}/authors',[AuthorController::class, 'getArticleAuthors']);
     Route::post('/article/{article}/authors',[AuthorController::class, 'addArticleAuthors']);
     Route::post('/authors/search', [AuthorController::class ,'search']);
+    Route::delete('/article/{article}/authors/{author}',[AuthorController::class, 'deleteArticleAuthor']);
 
 
 
@@ -88,6 +110,9 @@ Route::group(['middleware'=>['auth:sanctum']], function(){
     Route::get('/article/{article}/images',[ArticleController::class, 'articleImages']);
     Route::post('/article/{article}/upload-images',[ArticleController::class,'addArticleImages']);
     Route::post('/article/{article}/detach-images',[ArticleController::class,'detachImages']);
+    Route::post('/article/{article}/attach-images',[ArticleController::class,'attachImages']);
+
+    Route::get('/images',[ImageController::class,'index']);
 
     Route::post('/image/set-main',[ImageController::class,'setMainImage']);
     Route::get('/image/{image}/renditions',[ImageController::class,'getRenditions']);
@@ -103,4 +128,25 @@ Route::group(['middleware'=>['auth:sanctum']], function(){
 
     Route::get('/import',[\App\Http\Controllers\FacebookController::class, 'RssArticles']);
 
+});
+//////// V2
+Route::group(['middleware' => ['auth:sanctum'], 'prefix' => 'v2'], function (){
+    //category routes
+    Route::group(['prefix' => 'categories'],function (){
+        //
+        Route::get('/',[App\Http\Controllers\V2\Admin\CategoryController::class,'index']);
+    });
+
+    //articles routes
+    Route::group(['prefix' => 'articles'],function (){
+        //
+        Route::get('/',[App\Http\Controllers\V2\Admin\ArticleController::class,'index']);
+    });
+
+});
+
+// Public routes
+Route::group(['prefix' => 'v2/public'],function (){
+    Route::get('/', [\App\Http\Controllers\V2\Public\HomePageController::class,'getInitialProps']);
+    Route::get('/categories', [\App\Http\Controllers\V2\Admin\CategoryController::class,'getCategories']);
 });

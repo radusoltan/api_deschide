@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Search\Author;
+namespace App\Repositories;
 
-use Elastic\Elasticsearch\Client;
 use App\Models\Author;
+use Elastic\Elasticsearch\Client;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Arr;
 

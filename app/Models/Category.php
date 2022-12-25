@@ -55,4 +55,11 @@ class Category extends Model implements TranslatableContract
             'translations' => $this->translations()->get()
         ];
     }
+
+    public function getPublishedArticles(){
+        return $this->articles()
+            ->join('article_translations','article_translations.article_id','=','articles.id')
+            ->where('article_translations.status','=','P')
+            ->paginate(10);
+    }
 }

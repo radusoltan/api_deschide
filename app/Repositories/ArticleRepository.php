@@ -3,6 +3,8 @@
 namespace App\Repositories;
 
 use App\Models\Article;
+use App\Models\ArticleTranslation;
+use App\Models\Image;
 use Elastic\Elasticsearch\Client;
 use Elastic\Elasticsearch\Exception\ClientResponseException;
 use Elastic\Elasticsearch\Exception\ServerResponseException;
@@ -26,6 +28,7 @@ class ArticleRepository
     /**
      * @param string $query
      * @param string $locale
+     * @return Collection|void
      */
     public function search(string $query = '', string $locale)//: Collection
     {
@@ -75,6 +78,22 @@ class ArticleRepository
             ->sortBy(function ($article) use ($ids){
                 return array_search($article->getId(), $ids);
             });
+    }
+
+    public function getLastPublishedArticles()
+    {
+        $locale = request('locale');
+        app()->setLocale($locale);
+
+        $publishedIds = ArticleTranslation::where('status','=','P')->distinct()
+            ->orderBy('published_at',"DESC")
+            ->limit(15)->pluck('article_id')->toArray();
+
+        return Article::findMany($publishedIds)->load(['images', 'images.thumbnails'])
+            ->sortBy(function ($article) use ($publishedIds){
+                return array_search($article->getId(), $publishedIds);
+            });
+
     }
 
 }
