@@ -15,12 +15,18 @@ class ArticleRepository
     /** @var Client */
     private Client $elasticsearch;
 
+    /**
+     * @param Client $elasticsearch
+     */
     public function __construct(Client $elasticsearch)
     {
         $this->elasticsearch = $elasticsearch;
     }
 
     /**
+     * @param string $query
+     * @param string $locale
+     * @return Collection
      * @throws ClientResponseException
      * @throws ServerResponseException
      */
@@ -33,8 +39,11 @@ class ArticleRepository
     }
 
     /**
-     * @throws ServerResponseException
+     * @param string $query
+     * @param $locale
+     * @return array
      * @throws ClientResponseException
+     * @throws ServerResponseException
      */
     public function searchOnElastic(string $query = '', $locale): array
     {
@@ -57,6 +66,10 @@ class ArticleRepository
         return $items->asArray();
     }
 
+    /**
+     * @param array $items
+     * @return Collection
+     */
     public function buildCollection(array $items): Collection
     {
         $ids = Arr::pluck($items['hits']['hits'], '_id');

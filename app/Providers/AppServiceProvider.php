@@ -2,13 +2,11 @@
 
 namespace App\Providers;
 
-use App\Observers\ArticleObserver;
-use Illuminate\Support\ServiceProvider;
-use App\Search\Author\AuthorRepository;
 use App\Repositories\ArticleRepository;
-use App\Search\Category\CategoryRepository;
 use Elastic\Elasticsearch\Client;
 use Elastic\Elasticsearch\ClientBuilder;
+use Facebook\Facebook;
+use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +17,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
+
         $this->app->bind(ArticleRepository::class, function ($app){
 
             return new ArticleRepository(
@@ -34,9 +33,19 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->bind(Client::class, function () {
             return ClientBuilder::create()
-                ->setHosts([env('ELASTICSEARCH_HOST')])
-                ->setBasicAuthentication(env('ELASTICSEARCH_USER'), env('ELASTICSEARCH_PASS'))
+                ->setHosts(config('services.search.hosts'))
+                ->setBasicAuthentication(config('services.search.user'), config('services.search.pass'))
                 ->build();
+        });
+    }
+
+    private function bindFacebook(){
+        $this->app->bind(Facebook::class, function (){
+            return new Facebook([
+                'app_id' => config('services.facebook.client_id'),
+                'app_secret' => config('services.facebook.client_secret'),
+                'default_graph_version' => config('services.facebook.default_graph_version'),
+            ]);
         });
     }
 

@@ -20,7 +20,7 @@ class DatabaseSeeder extends Seeder
             CreateAdminUserSeeder::class,
             CategoryTableSeeder::class,
             AuthorsTableSeeder::class,
-//            ArticleTableSeeder::class,
+            ArticleTableSeeder::class,
             RenditionTableSeeder::class
         ]);
     }

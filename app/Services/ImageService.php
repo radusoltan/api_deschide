@@ -16,7 +16,9 @@ class ImageService {
 
         $imageFile = ImageManager::make($file->getRealPath());
 
-        $destinationPath = public_path('storage/images/'.$name);
+        $destinationPath = storage_path('app/public/images/'.$name);
+
+//        dd();
 
         $imageFile->save($destinationPath,100,'jpg');
 
@@ -31,6 +33,8 @@ class ImageService {
             ]);
         }
 
+        $this->saveImageThumbnails($image);
+
         return $image;
     }
 
@@ -38,7 +42,7 @@ class ImageService {
 
         $file = file_get_contents(public_path($image->path.'/'.$image->name));
 
-
+//        dd($file);
 
         $name = $image->name;
         // dump($name);
@@ -51,19 +55,18 @@ class ImageService {
                 ->where('image_id',$image->id)
                 ->first();
 
-            $img->crop($rendition->width,$rendition->height)
+            $cropped = $img->crop($rendition->width,$rendition->height)
                 ->save($destinationPath.$rendition->name.'_'.$name,100,'jpg');
             if (!$thumb){
                 ImageThumbnail::create([
                     'image_id' => $image->id,
                     'rendition_id' => $rendition->id,
+                    'width' => $cropped->width(),
+                    'height' => $cropped->height(),
                     'path' => 'storage/images/thumbnails/'.$rendition->name.'_'.$name
                 ]);
             }
         }
-
-        // die;
-
 
     }
 
@@ -89,6 +92,8 @@ class ImageService {
         $thumb->update([
             'image_id' => $image->id,
             'rendition_id' => $rendition->id,
+            'width' => $cropped->width(),
+            'height' => $cropped->height(),
             'path' => 'storage/images/thumbnails/'.$rendition->name.'_'.$name,
             'coords' => json_encode($crop['c'])
         ]);
@@ -97,6 +102,8 @@ class ImageService {
             $thumb =ImageThumbnail::create([
                 'image_id' => $image->id,
                 'rendition_id' => $rendition->id,
+                'width' => $cropped->width(),
+                'height' => $cropped->height(),
                 'path' => 'storage/images/thumbnails/'.$rendition->name.'_'.$name,
                 'coords' => json_encode($crop)
             ]);
@@ -106,7 +113,7 @@ class ImageService {
 
     public function getThumbnails(Image $image)
     {
-        return ImageThumbnail::where('image_id', $image->getId())
+        return ImageThumbnail::where('image_id', $image->getId())->with('rendition')
             // ->join('renditions','image_thumbnails.rendition_id','=','renditions.id')
             ->get();
     }

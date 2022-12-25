@@ -32,13 +32,13 @@ return [
     ],
     'search' => [
         'enabled' => env('ELASTICSEARCH_ENABLED', false),
-        'hosts' => explode(',', env('ELASTICSEARCH_HOSTS')),
+        'hosts' => explode(',', env('ELASTICSEARCH_HOST')),
         'user' => env('ELASTICSEARCH_USER'),
         'pass' => env('ELASTICSEARCH_PASS')
     ],
     'facebook' => [
         'client_id' => env('FACEBOOK_APP_ID'),
-        'client_secret' => env('FACEBOOK_APP_SECRET'),
+        'client_secret' => env('FACEBOOK_SECRET'),
         'redirect' => env('FACEBOOK_REDIRECT_URI'),  // Your application route used to redirect users back to your app after authentication
         'default_graph_version' => 'v15.0',
     ],

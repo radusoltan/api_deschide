@@ -4,15 +4,32 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Astrotomic\Translatable\Contracts\Translatable as TranslatableContract;
+use Astrotomic\Translatable\Translatable;
 
-class Image extends Model
+class Image extends Model implements TranslatableContract
 {
     use HasFactory;
+    use Translatable;
     protected $fillable = ['name', 'path', 'width', 'height'];
+    public array $translatedAttributes = ['title', 'author', 'description'];
 
-    public function articles()
+    public function articles(): BelongsToMany
     {
-        return $this->belongsToMany(Article::class, 'article_images','article_id','image_id');
+        return $this->belongsToMany(Article::class, 'article_images','image_id','id');
+    }
+
+    public function galleries()
+    {
+        return $this->belongsToMany(Gallery::class,'gallery_images','image_id','id');
+
+    }
+
+    public function thumbnails()
+    {
+        return $this->hasMany(ImageThumbnail::class,'image_id','id');
+//        return $this->hasMany(ImageThumbnail::class);
     }
 
     public function getThumbnails(){

@@ -4,19 +4,24 @@ namespace App\Http\Controllers;
 
 use App\Models\Author;
 use App\Models\Article;
+use App\Models\AuthorTranslation;
+use App\Repositories\AuthorRepository;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use App\Search;
+use LaravelIdea\Helper\App\Models\_IH_Author_C;
+use LaravelIdea\Helper\App\Models\_IH_AuthorTranslation_C;
 
 class AuthorController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return _IH_Author_C|Author[]|Collection
      */
-    public function index()
+    public function index(): Collection
     {
-        //
+        return Author::all();
     }
 
     /**
@@ -85,20 +90,57 @@ class AuthorController extends Controller
         //
     }
 
-    public function addArticleAuthors(Article $article)
+    /**
+     * @param Request $request
+     * @param Article $article
+     * @return Author[]|Collection|_IH_Author_C
+     */
+    public function addArticleAuthors(Request $request,Article $article)
     {
 
-        dump($article);
+        if ($request->has('author')){
+
+            $author = Author::find($request->get('author'));
+            if (!$article->authors->contains($author->getId())) {
+                $article->authors()->attach($author);
+            }
+        } else {
+            $request->validate([
+                'first_name' => 'required',
+                'last_name' => 'required',
+                'locale' => 'required'
+            ]);
+            app()->setLocale($request->get('locale'));
+
+            $author = Author::create([
+                'first_name' => $request->get('first_name'),
+                'last_name' => $request->get('last_name'),
+                'full_name' => $request->get('first_name').' '.$request->get('last_name'),
+                'slug' => \Str::slug($request->get('first_name').' '.$request->get('last_name'))
+            ]);
+
+            $article->authors()->attach($author->getId());
+        }
+
+
+        return $article->authors()->get();
 
     }
 
-    public function getArticleAuthors(Article $article)
+    /**
+     * @param Article $article
+     * @return Collection
+     */
+    public function getArticleAuthors(Article $article): Collection
     {
-//        dump($article->authors()->get());
         return $article->authors()->get();
     }
 
-    public function search(Search\Author\AuthorRepository $authorRepository)
+    /**
+     * @param AuthorRepository $repo
+     * @return Collection
+     */
+    public function search(AuthorRepository $repo): Collection
     {
         if (request()->has('locale')) {
             app()->setLocale(request('locale'));
@@ -108,9 +150,14 @@ class AuthorController extends Controller
 
         $q = request('q');
 
-        // dd();
+        return $repo->search($q, $locale);
 
-        return $authorRepository->search($q, $locale);
+    }
 
+    public function deleteArticleAuthor(Article $article, Author $author)
+    {
+        $article->authors()->detach($author->getId());
+
+        return $article->authors()->get();
     }
 }

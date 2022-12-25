@@ -52,11 +52,14 @@ class ArticleController extends Controller
      * Display the specified resource.
      *
      * @param Article $article
-     * @return Response
+     * @return Article
      */
     public function show(Article $article)
     {
-        return $article;
+        $article->vzt()->increment();
+
+//        dump($article->vzt()->count());
+        return $article->load('visits');
     }
 
     /**
@@ -80,8 +83,24 @@ class ArticleController extends Controller
             'status' => $request->status
         ]);
 
-        return $article;
+
+        return $article->load('visits');
     }
+
+//    public function updateIsFlash(Article $article){
+//
+//        return $article->setIsFlash();
+//    }
+//
+//    public function updateIsAlert(Article $article){
+//
+//        return $article->setIsAlert();
+//    }
+//
+//    public function updateIsBreaking(Article $article){
+//
+//        return $article->setIsBreaking();
+//    }
 
     /**
      * Remove the specified resource from storage.
@@ -146,6 +165,7 @@ class ArticleController extends Controller
     public function addArticleImages(Request $request, Article $article)
     {
 
+
         foreach ($request->images as $file) {
 
             $image = $this->service->uploadImage($file);
@@ -171,6 +191,13 @@ class ArticleController extends Controller
         return $article->images()->get();
     }
 
+    public function attachImages(Request $request, Article $article)
+    {
+
+        $article->images()->sync($request->get('ids'));
+
+        return $article->images()->get();
+    }
 
     /**
      * @param Request $request
@@ -184,6 +211,8 @@ class ArticleController extends Controller
         $article->images()->detach($request->get('id'));
         return $article->images()->get();
     }
+
+
 
     /**
      * @param Article $article
@@ -226,7 +255,7 @@ class ArticleController extends Controller
 
     /**
      * @param Category $category
-     * @return Article[]|LengthAwarePaginator|\Illuminate\Pagination\LengthAwarePaginator|_IH_Article_C
+     * @return LengthAwarePaginator
      */
     public function getPublishedArticlesByCategory(Category $category): LengthAwarePaginator
     {

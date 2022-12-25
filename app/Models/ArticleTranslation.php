@@ -20,6 +20,6 @@ class ArticleTranslation extends Model
 
     public function scopePublished($query)
     {
-        return $query->where('published_at','<=',now());
+        return $query->where('status','=','p');
     }
 }

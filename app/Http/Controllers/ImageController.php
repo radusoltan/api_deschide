@@ -10,6 +10,7 @@ use App\Models\Article;
 use App\Models\ImageThumbnail;
 use App\Models\Rendition;
 use App\Services\ImageService;
+use Illuminate\Http\Response;
 
 class ImageController extends Controller
 {
@@ -20,18 +21,18 @@ class ImageController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
      */
     public function index()
     {
         //
+        return Image::with('thumbnails')->paginate();
     }
 
     /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function store(Request $request)
     {
@@ -42,7 +43,7 @@ class ImageController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\Image  $image
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function show(Image $image)
     {
@@ -54,7 +55,7 @@ class ImageController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Image  $image
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function update(Request $request, Image $image)
     {
@@ -65,7 +66,7 @@ class ImageController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\Image  $image
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function destroy(Image $image)
     {
