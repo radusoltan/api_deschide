@@ -23,7 +23,8 @@ class Author extends Model implements TranslatableContract
 
     protected $fillable = [
         'email',
-        'facebook'
+        'facebook',
+        'old_number'
     ];
 
     public function toSearchArray(): array

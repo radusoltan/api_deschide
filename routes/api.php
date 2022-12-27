@@ -116,6 +116,7 @@ Route::group(['middleware'=>['auth:sanctum']], function(){
 
     Route::post('/image/set-main',[ImageController::class,'setMainImage']);
     Route::get('/image/{image}/renditions',[ImageController::class,'getRenditions']);
+    Route::patch('/image/{image}/meta',[ImageController::class,'addImageMeta']);
 
     Route::post('/image/{image}/crop',[ImageController::class,'crop']);
     Route::get('/image/{image}/thumbnails',[ImageController::class,'getImageThumbnails']);
@@ -123,6 +124,9 @@ Route::group(['middleware'=>['auth:sanctum']], function(){
     {
         return Rendition::all();
     });
+
+    Route::get('import/categories',[\App\Http\Controllers\ImportController::class,'importCategories']);
+    Route::get('import/articles',[\App\Http\Controllers\ImportController::class,'importArticles']);
 
     Route::get('/post',[\App\Http\Controllers\FacebookController::class, 'postNews']);
 

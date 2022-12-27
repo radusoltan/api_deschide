@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('source')->nullable(true)->default((null));
             $table->string('author')->nullable(true)->default(null);
             $table->unique(['name']);
+            $table->integer('old_number')->nullable(true);
             $table->timestamps();
         });
     }

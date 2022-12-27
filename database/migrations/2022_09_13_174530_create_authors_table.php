@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->string('email')->nullable(true);
             $table->string('facebook')->nullable(true);
+            $table->integer('old_number')->nullable(true);
             $table->timestamps();
         });
     }

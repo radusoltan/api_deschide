@@ -24,7 +24,7 @@ class Article extends Model implements TranslatableContract
 
     public array $translatedAttributes = ['title', 'slug', 'lead', 'body', 'status', 'published_at'];
 
-    protected $fillable = ['category_id', 'is_flash', 'is_alert', 'is_breaking', 'old_num'];
+    protected $fillable = ['category_id', 'is_flash', 'is_alert', 'is_breaking', 'old_number'];
 
     protected $casts = [
         'is_flash' => 'boolean',
@@ -118,7 +118,7 @@ class Article extends Model implements TranslatableContract
             ->where('article_translations.status', '=', 'P')
 
             ->with(['images','images.thumbnails'])
-            ->orderBy('article_translations.publish_at','DESC')
+            ->orderBy('article_translations.published_at','DESC')
             ->limit(15)
             ->get()
             ;

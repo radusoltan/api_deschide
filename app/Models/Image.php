@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\Traits\Searchable;
+use App\Services\ImageService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -12,8 +14,27 @@ class Image extends Model implements TranslatableContract
 {
     use HasFactory;
     use Translatable;
-    protected $fillable = ['name', 'path', 'width', 'height'];
+    use Searchable;
+
+    protected $service;
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->service = new ImageService();
+
+    }
+
+    protected $fillable = ['name', 'path', 'width', 'height', 'old_number'];
     public array $translatedAttributes = ['title', 'author', 'description'];
+
+    public function toSearchArray(): array
+    {
+        return [
+            'id' => $this->getId(),
+            'translations' => $this->translations()->get(),
+        ];
+    }
 
     public function articles(): BelongsToMany
     {
@@ -57,6 +78,12 @@ class Image extends Model implements TranslatableContract
         return $mainImage->getImageId();
     }
 
+    public function setThumbnails()
+    {
+        $this->service->saveImageThumbnails($this);
+
+    }
+
     public function getId(){
         return $this->id;
     }
@@ -86,4 +113,6 @@ class Image extends Model implements TranslatableContract
     public function getAuthor(){
         return $this->author;
     }
+
+
 }

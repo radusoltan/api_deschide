@@ -19,8 +19,10 @@ class DatabaseSeeder extends Seeder
             PermissionTableSeeder::class,
             CreateAdminUserSeeder::class,
             CategoryTableSeeder::class,
-            AuthorsTableSeeder::class,
+//            AuthorsTableSeeder::class,
             ArticleTableSeeder::class,
+            ImageTableSeeder::class,
+//            ThumbnailsTableSeeder::class,
             RenditionTableSeeder::class
         ]);
     }

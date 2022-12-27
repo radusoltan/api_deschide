@@ -15,8 +15,8 @@ class Category extends Model implements TranslatableContract
     use Translatable;
     use Searchable;
 
-    public $translatedAttributes = ['title','slug'];
-    protected $fillable = ['in_menu','old_number'];
+    public $translatedAttributes = ['in_menu','title','slug'];
+    protected $fillable = ['old_number'];
     protected $casts = [
         'in_menu' => 'boolean'
     ];
