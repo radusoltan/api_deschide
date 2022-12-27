@@ -9,5 +9,5 @@ class CategoryTranslation extends Model
 {
     use HasFactory;
     public $timestamps = false;
-    protected $fillable = ['title','slug'];
+    protected $fillable = ['in_menu','title','slug'];
 }

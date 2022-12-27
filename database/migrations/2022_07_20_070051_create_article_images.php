@@ -19,6 +19,7 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(Article::class);
             $table->foreignIdFor(Image::class);
+
             $table->boolean('is_main')->default(false);
         });
     }

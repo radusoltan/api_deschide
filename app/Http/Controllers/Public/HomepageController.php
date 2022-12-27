@@ -15,9 +15,9 @@ class HomepageController extends Controller
     {
 
         return [
-            'latestPublishedArticles' => Article::getLastPublishedArticles(),
+//            'latestPublishedArticles' => Article::getLastPublishedArticles(),
             'categories' => Category::where('in_menu', true)->get(),
-            'defaultImage' => Image::find(1)->load('thumbnails')
+//            'defaultImage' => Image::find(1)->with('thumbnails')
         ];
     }
 

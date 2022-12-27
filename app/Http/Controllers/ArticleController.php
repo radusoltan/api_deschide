@@ -145,6 +145,7 @@ class ArticleController extends Controller
 
     public function articleImages(Article $article)
     {
+//        dump();
         $resp = [];
 
         foreach ($article->images()->get() as $image) {
@@ -157,8 +158,10 @@ class ArticleController extends Controller
                 'height' => $image->getHeight(),
                 'isMain' => $image->getArticleMainImage($article) === $image->getId() ?? null,
                 'thumbs' => $image->getThumbnails(),
+                'translations' => $image->translations()->get()
             ];
         }
+//        return $resp;
         return $resp;
     }
 

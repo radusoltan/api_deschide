@@ -135,4 +135,20 @@ class ImageController extends Controller
 
 
     }
+
+    public function addImageMeta(Request $request,Image $image)
+    {
+
+        app()->setLocale($request->get('locale'));
+
+        $image->update([
+            'author' => $request->get('author'),
+            'title' => $request->get('title'),
+            'description' => $request->get('description')
+        ]);
+
+        return $image;
+
+
+    }
 }

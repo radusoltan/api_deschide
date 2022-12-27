@@ -15,6 +15,7 @@ return new class extends Migration
     {
         Schema::create('category_translations', function (Blueprint $table) {
             $table->id();
+            $table->boolean('in_menu')->default(false);
             $table->string('locale')->index();
             $table->string('title');
             $table->string('slug')->index();
