@@ -18,8 +18,17 @@ use App\Http\Controllers\Public\ArticleController;
 */
 
 Route::get('/', function () {
-    return ['Laravel' => app()->version()];
+//    return ['Laravel' => app()->version()];
+    dump('Virgil');
 });
+
+Route::any('/firewall/panel/{path?}', function() {
+
+    $panel = new \Shieldon\Firewall\Panel();
+    $panel->csrf(['_token' => csrf_token()]);
+    $panel->entry();
+
+})->where('path', '(.*)');
 
 //public routes
 Route::get('/categories', [CategoryController::class,'getAllPublishedCategories']);

@@ -44,7 +44,7 @@ class ReindexCommand extends Command
         $this->info('Indexing all articles. This might take a while...');
 
         foreach (Article::cursor() as $article){
-            // dd($article->toSearchArray());
+//             dump($article);
             $this->elasticsearch->index([
                 'index' => $article->getSearchIndex(),
                  'type' => $article->getType(),
@@ -53,18 +53,20 @@ class ReindexCommand extends Command
             ]);
             $this->output->write('.');
         }
+//        die;
 
         $this->info('Indexing all authors. This might take a while...');
 
-        foreach (Author::cursor() as $author){
-            $this->elasticsearch->index([
-                'index' => $author->getSearchIndex(),
-                'type' => $author->getType(),
-                'id' => $author->getId(),
-                'body' => $author->toSearchArray()
-            ]);
-            $this->output->write('.');
-        }
+
+//        foreach (Author::cursor() as $author){
+//            $this->elasticsearch->index([
+//                'index' => $author->getSearchIndex(),
+//                'type' => $author->getType(),
+//                'id' => $author->getId(),
+//                'body' => $author->toSearchArray()
+//            ]);
+//            $this->output->write('.');
+//        }
 
         $this->output->write('Done !');
 

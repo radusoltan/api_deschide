@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Article;
 use App\Models\Author;
+use App\Repositories\ArticleRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
@@ -57,6 +58,7 @@ class ArticleController extends Controller
     public function show(Article $article)
     {
         $article->vzt()->increment();
+        app()->setLocale(request('locale'));
 
 //        dump($article->vzt()->count());
         return $article->load('visits');
@@ -305,7 +307,7 @@ class ArticleController extends Controller
         $translation->publish_at = $dt;
         $translation->save();
 
-        return $article;
+        return $article->load('visits');
     }
 
     /**
@@ -317,7 +319,7 @@ class ArticleController extends Controller
         $translation = ArticleTranslation::find($id);
         $translation->publish_at = null;
         $translation->save();
-        return Article::find($translation->article_id);
+        return Article::find($translation->article_id)->load('visits');
     }
 
     /**

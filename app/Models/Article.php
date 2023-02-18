@@ -22,7 +22,7 @@ class Article extends Model implements TranslatableContract
     use SoftDeletes;
 
 
-    public array $translatedAttributes = ['title', 'slug', 'lead', 'body', 'status', 'published_at'];
+    public array $translatedAttributes = ['title', 'slug', 'lead', 'body', 'status', 'published_at','publish_at'];
 
     protected $fillable = ['category_id', 'is_flash', 'is_alert', 'is_breaking', 'old_number'];
 
@@ -132,16 +132,21 @@ class Article extends Model implements TranslatableContract
 
     public function toSearchArray(): array
     {
-        return [
-            'id' => $this->id,
-            'category_id' => $this->category_id,
-            'translations' => $this->translations()->get(),
-            'is_flash' => $this->is_flash,
-            'is_alert' => $this->is_alert,
-            'is_breaking' => $this->is_breaking,
-            'images' => $this->images()->get(),
-            'authors' => $this->authors()->get()
-        ];
+//        dump(app()->getLocale());
+//        dump();
+
+        return $this->load('images','authors')->toArray();
+
+//        return [
+//            'id' => $this->id,
+//            'category_id' => $this->category_id,
+//            'translations' => $this->translations()->get(),
+//            'is_flash' => $this->is_flash,
+//            'is_alert' => $this->is_alert,
+//            'is_breaking' => $this->is_breaking,
+//            'images' => $this->images()->get(),
+//            'authors' => $this->authors()->get()
+//        ];
     }
 
 //    public static function booted()

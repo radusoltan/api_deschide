@@ -87,7 +87,7 @@ class ImportController extends Controller
                     }
                 }
 
-//                $this->importImages($article);
+                $this->importImages($article);
                 $this->importAuthors($article);
 //                $this->importImage($item['renditions'][0]['details']);
 
@@ -123,6 +123,10 @@ class ImportController extends Controller
                             'old_number' => $oldImage['id']
                         ]);
 
+                    }
+
+                    if (!$article->images->contains($image)){
+                        $article->images()->attach($image);
                     }
 
                     $this->service->saveImageThumbnails($image);

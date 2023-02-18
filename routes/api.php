@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Models\Article;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -26,11 +27,19 @@ use App\Search\ElasticsearchRepository;
 */
 
 Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
-    return $request->user();
+    return response()->json([
+        'user' => $request->user(),
+        'permissions' => $request->user()->getAllPermissions()->pluck('name')
+    ]);
 });
 
 Route::post('login',[AuthController::class,'login']);
-
+//Route::post('/login', [AuthenticatedSessionController::class, 'store'])
+//    ->middleware('guest')
+//    ->name('login');
+Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
+    ->middleware('auth')
+    ->name('logout');
 Route::group(['prefix' => 'public'], function (){
     Route::get('home',[\App\Http\Controllers\Public\HomepageController::class,'getInitialProps']);
     Route::get('categories', [\App\Http\Controllers\Public\CategoryController::class, 'getAllPublishedCategories']);
@@ -55,7 +64,8 @@ Route::group(['middleware'=>['auth:sanctum']], function(){
 
 
 
-    Route::post('/logout',[AuthController::class,'logout']);
+//    Route::post('/logout',[AuthController::class,'logout']);
+    Route::get('/check-auth',[AuthController::class,'checkAuth']);
 
     // Categories
     Route::apiResource('/categories',CategoryController::class);

@@ -22,7 +22,6 @@ class ArticleObserver
      */
     public function created(Article $article)
     {
-//        dd($article);
          $article->elasticsearchIndex($this->elasticsearchClient);
     }
 
