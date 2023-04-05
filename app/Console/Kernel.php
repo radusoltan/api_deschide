@@ -18,6 +18,7 @@ class Kernel extends ConsoleKernel
 
         // $schedule->exec("wget $url")->everyMinute();
         $schedule->command('facebook:share')->everyThreeMinutes();
+        $schedule->command('publish:articles')->everyThreeMinutes();
     }
 
     /**

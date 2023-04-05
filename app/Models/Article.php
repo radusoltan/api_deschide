@@ -41,6 +41,10 @@ class Article extends Model implements TranslatableContract
 
     }
 
+    public function foreignList(){
+        return $this->belongsTo(ArticleList::class);
+    }
+
     public function setIsFlash()
     {
         $this->is_alert = false;
@@ -84,7 +88,7 @@ class Article extends Model implements TranslatableContract
 
     public function images(): BelongsToMany
     {
-        return $this->belongsToMany(Image::class, 'article_images');
+        return $this->belongsToMany(Image::class, 'article_images')->withPivot('is_main');
     }
 
     public function authors(): BelongsToMany
@@ -102,11 +106,11 @@ class Article extends Model implements TranslatableContract
         return $this->hasOne(Gallery::class);
     }
 
-    public function vzt(): Visits
+    public function vzt()//: Visits
     {
         return visits($this);
     }
-
+//
     public function visits()
     {
         return visits($this)->relation();

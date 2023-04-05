@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Article;
+use App\Models\ArticleList;
 use App\Models\Author;
 use App\Repositories\ArticleRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -57,11 +58,10 @@ class ArticleController extends Controller
      */
     public function show(Article $article)
     {
-        $article->vzt()->increment();
-        app()->setLocale(request('locale'));
 
-//        dump($article->vzt()->count());
-        return $article->load('visits');
+        app()->setLocale(request('locale'));
+        $article->vzt()->increment();
+        return $article->load('visits','images');
     }
 
     /**
@@ -86,7 +86,7 @@ class ArticleController extends Controller
         ]);
 
 
-        return $article->load('visits');
+        return $article;
     }
 
 //    public function updateIsFlash(Article $article){
@@ -147,9 +147,9 @@ class ArticleController extends Controller
 
     public function articleImages(Article $article)
     {
-//        dump();
-        $resp = [];
 
+        $resp = [];
+//
         foreach ($article->images()->get() as $image) {
 
             $resp[] = [
@@ -163,13 +163,19 @@ class ArticleController extends Controller
                 'translations' => $image->translations()->get()
             ];
         }
-//        return $resp;
+//        dump($resp);
         return $resp;
+//        if ($article->images()->count()>0){
+//            return $resp;
+//        } else {
+//            return [];
+//        }
+//        return $resp;
     }
 
     public function addArticleImages(Request $request, Article $article)
     {
-
+//        dump($request);
 
         foreach ($request->images as $file) {
 
@@ -180,7 +186,7 @@ class ArticleController extends Controller
             }
         }
 
-        if ($article->images->count() === 1) {
+        if ($article->images()->count() === 1) {
 
             $image = $article->images()->first();
 
@@ -307,7 +313,7 @@ class ArticleController extends Controller
         $translation->publish_at = $dt;
         $translation->save();
 
-        return $article->load('visits');
+        return $article;
     }
 
     /**
@@ -319,7 +325,7 @@ class ArticleController extends Controller
         $translation = ArticleTranslation::find($id);
         $translation->publish_at = null;
         $translation->save();
-        return Article::find($translation->article_id)->load('visits');
+        return Article::find($translation->article_id);
     }
 
     /**
@@ -330,4 +336,6 @@ class ArticleController extends Controller
     {
         return $article->authors()->get();
     }
+
+
 }

@@ -18,16 +18,23 @@ class RenditionTableSeeder extends Seeder
         $renditions = [
             [
                 'name' => 'main',
-                'width' => 1600,
-                'height' => 900,
-                'aspect' => 1.777777777777778,
+                'width' => 1000,
+                'height' => 550,
+                'aspect' => 1.818181818181818,
                 'coords' => json_encode([])
             ],
+//            [
+//                'name' => 'important',
+//                'width' => 1170,
+//                'height' => 450,
+//                'aspect' => 2.6,
+//                'coords' => json_encode([])
+//            ],
             [
-                'name' => 'important',
-                'width' => 1170,
-                'height' => 450,
-                'aspect' => 2.6,
+                'name' => 'mobileMain',
+                'width' => 1000,
+                'height' => 777,
+                'aspect' => 1.28,
                 'coords' => json_encode([])
             ]
         ];

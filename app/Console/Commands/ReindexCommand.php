@@ -41,21 +41,25 @@ class ReindexCommand extends Command
      */
     public function handle()
     {
+
         $this->info('Indexing all articles. This might take a while...');
 
         foreach (Article::cursor() as $article){
-//             dump($article);
-            $this->elasticsearch->index([
-                'index' => $article->getSearchIndex(),
-                 'type' => $article->getType(),
-                'id' => $article->getId(),
-                'body' => $article->toSearchArray()
-            ]);
+             if($article->status === 'P') {
+
+                 $this->elasticsearch->index([
+                     'index' => $article->getSearchIndex(),
+                     'type' => $article->getType(),
+                     'id' => $article->getId(),
+                     'body' => $article->toSearchArray()
+                 ]);
+             }
+
             $this->output->write('.');
         }
 //        die;
 
-        $this->info('Indexing all authors. This might take a while...');
+//        $this->info('Indexing all authors. This might take a while...');
 
 
 //        foreach (Author::cursor() as $author){

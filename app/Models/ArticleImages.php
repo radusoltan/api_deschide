@@ -11,6 +11,10 @@ class ArticleImages extends Model
     protected $fillable = ['is_main'];
     public $timestamps = false;
 
+    protected $casts = [
+        'is_main' => 'boolean'
+    ];
+
     public function articles(){
         return $this->belongsToMany(Article::class,'article_images');
     }

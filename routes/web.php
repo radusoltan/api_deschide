@@ -1,11 +1,11 @@
 <?php
 
+use App\Http\Controllers\FacebookSocialiteController;
 use Illuminate\Support\Facades\Route;
-use App\Models\Article;
-use App\Models\Category;
-use App\Search\ElasticsearchRepository;
 use App\Http\Controllers\Public\CategoryController;
 use App\Http\Controllers\Public\ArticleController;
+use Shieldon\Firewall\Panel;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -18,20 +18,20 @@ use App\Http\Controllers\Public\ArticleController;
 */
 
 Route::get('/', function () {
-//    return ['Laravel' => app()->version()];
-    dump('Virgil');
+//    phpinfo();
+    return ['Laravel' => app()->version()];
 });
 
 Route::any('/firewall/panel/{path?}', function() {
 
-    $panel = new \Shieldon\Firewall\Panel();
+    $panel = new Panel();
     $panel->csrf(['_token' => csrf_token()]);
     $panel->entry();
 
 })->where('path', '(.*)');
 
 //public routes
-Route::get('/categories', [CategoryController::class,'getAllPublishedCategories']);
+Route::get('/categories', [CategoryController::class,'getAllPublishedCategories'])->middleware('firewall');
 //Route::get('/category/{slug}',[CategoryController::class,'getCategory']);
 Route::get('/published-articles',[ArticleController::class,'getAllPublishedArticles']);
 
@@ -49,3 +49,6 @@ Route::group(['prefix'=> 'login/facebook'], function (){
 Route::get('/import',[\App\Http\Controllers\FacebookController::class, 'RssArticles']);
 //Route::get('/fb-user',[\App\Http\Controllers\GraphController::class,'retrieveUserProfile']);
 //Route::get('/fb-logout', [\App\Http\Controllers\GraphController::class,'deauthorize']);
+//social media routes
+Route::get('auth/facebook', [FacebookSocialiteController::class, 'redirectToFB']);
+Route::get('login/facebook/callback', [FacebookSocialiteController::class, 'handleCallback']);

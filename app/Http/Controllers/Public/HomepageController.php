@@ -13,10 +13,12 @@ class HomepageController extends Controller
 
     public function getInitialProps()
     {
-
+//        app()->setLocale(request('locale'));
+//        $categories =
+//        dump($categories);
         return [
-//            'latestPublishedArticles' => Article::getLastPublishedArticles(),
-            'categories' => Category::where('in_menu', true)->get(),
+            'categories' => Category::all(),
+            'latestPublishedArticles' => Article::getLastPublishedArticles(),
 //            'defaultImage' => Image::find(1)->with('thumbnails')
         ];
     }

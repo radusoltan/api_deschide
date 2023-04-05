@@ -22,7 +22,7 @@ class ArticleObserver
      */
     public function created(Article $article)
     {
-         $article->elasticsearchIndex($this->elasticsearchClient);
+//         $article->elasticsearchIndex($this->elasticsearchClient);
     }
 
     public function flash(Article $article)
