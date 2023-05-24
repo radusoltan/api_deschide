@@ -37,6 +37,8 @@ class AppServiceProvider extends ServiceProvider
             return ClientBuilder::create()
                 ->setHosts(config('services.search.hosts'))
                 ->setBasicAuthentication(config('services.search.user'), config('services.search.pass'))
+//                ->setCABundle('http_ca.crt')
+                ->setSSLVerification(false)
                 ->build();
         });
     }

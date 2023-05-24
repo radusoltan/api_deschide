@@ -13,6 +13,10 @@ class ArticleTranslation extends Model
     public $timestamps = false;
     protected $fillable = ['title','slug','lead','body','keywords','status', 'published_at','publish_at'];
 
+    public function article(){
+        return $this->belongsTo(Article::class);
+    }
+
     protected $casts = [
         'publish_at' => 'datetime',
         'keywords' => 'json'

@@ -38,7 +38,8 @@ class ArticleObserver
      */
     public function updated(Article $article): void
     {
-        // $article->elasticsearchUpdate($this->elasticsearchClient);
+//        dump($article);
+         $article->elasticsearchUpdate($this->elasticsearchClient);
     }
 
     /**
@@ -49,7 +50,7 @@ class ArticleObserver
      */
     public function deleted(Article $article)
     {
-        // $article->elasticsearchDelete($this->elasticsearchClient);
+         $article->elasticsearchDelete($this->elasticsearchClient);
     }
 
     /**
@@ -60,7 +61,7 @@ class ArticleObserver
      */
     public function restored(Article $article)
     {
-        dd($article);
+
         // $article->elasticsearchIndex($this->elasticsearchClient);
     }
 

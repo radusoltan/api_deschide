@@ -7,12 +7,14 @@ use App\Models\CategoryTranslation;
 use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Log;
 
 class CategoryController extends Controller
 {
 
     public function getAllPublishedCategories()
     {
+        Log::info('cats');
         $res = [];
         $locale = request('locale');
 //////

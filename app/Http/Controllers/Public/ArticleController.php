@@ -17,7 +17,7 @@ class ArticleController extends Controller {
             ->join('article_translations','article_translations.article_id','=','articles.id')
             ->where([
                 ['article_translations.status','=','P'],
-//                ['article_translations.locale','=', request('locale')]
+                ['article_translations.locale','=', request('locale')]
             ])
             ->orderBy('article_translations.published_at', 'DESC')
             ->paginate();
