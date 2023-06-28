@@ -31,10 +31,10 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
     'search' => [
-        'enabled' => env('ELASTICSEARCH_ENABLED', false),
-        'hosts' => explode(',', env('ELASTICSEARCH_HOST')),
-        'user' => env('ELASTICSEARCH_USER'),
-        'pass' => env('ELASTICSEARCH_PASS')
+        'enabled' => env('ELASTIC_ENABLED', false),
+        'hosts' => explode(',', env('ELASTIC_HOSTS')),
+        'user' => env('ELASTIC_USER'),
+        'pass' => env('ELASTIC_PASSWORD')
     ],
     'facebook' => [
         'client_id' => env('FACEBOOK_APP_ID'),
