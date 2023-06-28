@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
             CategoryTableSeeder::class,
 //            AuthorsTableSeeder::class,
             ArticleTableSeeder::class,
-            ImageTableSeeder::class,
+//            ImageTableSeeder::class,
 //            ThumbnailsTableSeeder::class,
             RenditionTableSeeder::class
         ]);

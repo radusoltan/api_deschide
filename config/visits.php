@@ -10,7 +10,7 @@ return [
     | Connection Name: see config/database.php
     |
     */
-    'engine' => 'eloquent',
+    'engine' => \Awssat\Visits\DataEngines\EloquentEngine::class,
     'connection' => 'laravel-visits',
 
 
@@ -51,7 +51,7 @@ return [
     | Always return uncached fresh top/low lists
     |--------------------------------------------------------------------------
     */
-    'always_fresh' => false,
+    'always_fresh' => true,
 
 
     /*

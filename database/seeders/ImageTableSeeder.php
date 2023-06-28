@@ -78,7 +78,7 @@ class ImageTableSeeder extends Seeder
                     'old_number' => $oldImage['id']
                 ]);
             }
-            $image->setThumbnails();
+//            $image->setThumbnails();
             if (!$article->images->contains($image)) {
                 $article->images()->attach($image);
             }

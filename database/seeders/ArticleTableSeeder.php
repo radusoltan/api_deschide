@@ -19,36 +19,69 @@ class ArticleTableSeeder extends Seeder
      */
     public function run()
     {
+        for ($i=0;$i<100;$i++){
+            app()->setLocale('ro');
+            $title = '// RO //'.fake()->sentence();
 
-        foreach (config('translatable.locales') as $locale){
-            app()->setLocale($locale);
+            $article = Article::create([
+                'category_id' => fake()->randomKey(Category::pluck('id','id')->all()),
+                'title' => $title,
+                'slug' => Str::slug($title),
+                'lead' => fake()->paragraph(),
+                'body' => fake()->paragraph(),
+                'status' => "P"
+            ]);
 
-            $response = Http::get('https://deschide.md/api/articles?items_per_page=5&language='.app()->getLocale());
-            $items = $response->json();
+            app()->setLocale('en');
+            $title = '// EN //'.fake()->sentence();
+            $article->update([
+                'title' => $title,
+                'slug' => Str::slug($title),
+                'lead' => fake()->paragraph(),
+                'body' => fake()->paragraph(),
+                'status' => "P"
+            ]);
+            app()->setLocale('ru');
+            $title = '// RU //'.fake()->sentence();
+            $article->update([
+                'title' => $title,
+                'slug' => Str::slug($title),
+                'lead' => fake()->paragraph(),
+                'body' => fake()->paragraph(),
+                'status' => "P"
+            ]);
 
-            foreach ($items['items'] as $item){
-                $category = Category::where('old_number', $item["section"]["number"])->first();
-
-                $article = Article::where('old_number',$item['number'])->first();
-
-                $publish_at_date = Carbon::parse($item['published']);
-
-                if (!$article){
-                    if (isset($item['fields']['Continut'])){
-                        $article = Article::create([
-                            'category_id' => $category->getId(),
-                            'title' => $item['title'],
-                            'slug' => Str::slug($item['title']),
-                            'lead' => $item['fields']['lead'] ?? '',
-                            'body' => $item['fields']['Continut'],
-                            'status' => $item['status']==='Y' ? 'P' : 'another',
-                            'old_number' => $item['number'],
-                            'published_at' => $publish_at_date
-                        ]);
-                    }
-                }
-            }
         }
+
+//        foreach (config('translatable.locales') as $locale){
+//            app()->setLocale($locale);
+//
+//            $response = Http::get('https://deschide.md/api/articles?items_per_page=5&language='.app()->getLocale());
+//            $items = $response->json();
+//
+//            foreach ($items['items'] as $item){
+//                $category = Category::where('old_number', $item["section"]["number"])->first();
+//
+//                $article = Article::where('old_number',$item['number'])->first();
+//
+//                $publish_at_date = Carbon::parse($item['published']);
+//
+//                if (!$article){
+//                    if (isset($item['fields']['Continut'])){
+//                        $article = Article::create([
+//                            'category_id' => $category->getId(),
+//                            'title' => $item['title'],
+//                            'slug' => Str::slug($item['title']),
+//                            'lead' => $item['fields']['lead'] ?? '',
+//                            'body' => $item['fields']['Continut'],
+//                            'status' => $item['status']==='Y' ? 'P' : 'another',
+//                            'old_number' => $item['number'],
+//                            'published_at' => $publish_at_date
+//                        ]);
+//                    }
+//                }
+//            }
+//        }
 
     }
 }

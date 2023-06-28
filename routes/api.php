@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\FacebookSocialiteController;
 use App\Models\Article;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -26,13 +28,22 @@ use App\Search\ElasticsearchRepository;
 */
 
 Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
-    return $request->user();
+    return response()->json([
+        'user' => $request->user(),
+        'permissions' => $request->user()->getAllPermissions()->pluck('name')
+    ]);
 });
 
 Route::post('login',[AuthController::class,'login']);
-
+//Route::post('/login', [AuthenticatedSessionController::class, 'store'])
+//    ->middleware('guest')
+//    ->name('login');
+Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
+    ->middleware('auth')
+    ->name('logout');
 Route::group(['prefix' => 'public'], function (){
     Route::get('home',[\App\Http\Controllers\Public\HomepageController::class,'getInitialProps']);
+    Route::get('important-articles',[\App\Http\Controllers\Public\ArticleController::class,'getImportantArticles']);
     Route::get('categories', [\App\Http\Controllers\Public\CategoryController::class, 'getAllPublishedCategories']);
     Route::get('category/{slug}',[\App\Http\Controllers\Public\CategoryController::class,'getCategory']);
     Route::get('category/{category}/articles',[\App\Http\Controllers\Public\CategoryController::class,'getCategoryPublishedArticles']);
@@ -55,7 +66,8 @@ Route::group(['middleware'=>['auth:sanctum']], function(){
 
 
 
-    Route::post('/logout',[AuthController::class,'logout']);
+//    Route::post('/logout',[AuthController::class,'logout']);
+    Route::get('/check-auth',[AuthController::class,'checkAuth']);
 
     // Categories
     Route::apiResource('/categories',CategoryController::class);
@@ -113,10 +125,14 @@ Route::group(['middleware'=>['auth:sanctum']], function(){
     Route::post('/article/{article}/attach-images',[ArticleController::class,'attachImages']);
 
     Route::get('/images',[ImageController::class,'index']);
+    Route::get('/images/{image}',[ImageController::class, 'show']);
+
 
     Route::post('/image/set-main',[ImageController::class,'setMainImage']);
     Route::get('/image/{image}/renditions',[ImageController::class,'getRenditions']);
+
     Route::patch('/image/{image}/meta',[ImageController::class,'addImageMeta']);
+    Route::patch('/image/{image}/edit-meta',[ImageController::class,'editMeta']);
 
     Route::post('/image/{image}/crop',[ImageController::class,'crop']);
     Route::get('/image/{image}/thumbnails',[ImageController::class,'getImageThumbnails']);
@@ -131,6 +147,15 @@ Route::group(['middleware'=>['auth:sanctum']], function(){
     Route::get('/post',[\App\Http\Controllers\FacebookController::class, 'postNews']);
 
     Route::get('/import',[\App\Http\Controllers\FacebookController::class, 'RssArticles']);
+
+    // Important articles list
+    Route::get('/lists',[\App\Http\Controllers\ArticlesListController::class, 'getLists']);
+    Route::post('/list/create',[\App\Http\Controllers\ArticlesListController::class, 'createArticlesList']);
+    Route::post('/list/{articleList}/attach',[\App\Http\Controllers\ArticlesListController::class, 'addArticlesToList']);
+    Route::post('/list/{articleList}/detach',[\App\Http\Controllers\ArticlesListController::class,'detachArticleFromList']);
+
+    // ElasticSearch
+    Route::get('/elastic',[\App\Http\Controllers\ElasticSearchController::class,'getIndexes']);
 
 });
 //////// V2
@@ -154,3 +179,7 @@ Route::group(['prefix' => 'v2/public'],function (){
     Route::get('/', [\App\Http\Controllers\V2\Public\HomePageController::class,'getInitialProps']);
     Route::get('/categories', [\App\Http\Controllers\V2\Admin\CategoryController::class,'getCategories']);
 });
+
+
+
+

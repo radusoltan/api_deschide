@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\ArticleTranslation;
+use App\Observers\ArticleTranslationObserver;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -41,6 +43,7 @@ class EventServiceProvider extends ServiceProvider
         Article::observe(ArticleObserver::class);
         Author::observe(AuthorObserver::class);
         Category::observe(CategoryObserver::class);
+        ArticleTranslation::observe(ArticleTranslationObserver::class);
     }
 
     /**

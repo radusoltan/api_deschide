@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\Article;
 use App\Models\ArticleTranslation;
+use App\Models\Category;
 use App\Models\Image;
 use Elastic\Elasticsearch\Client;
 use Elastic\Elasticsearch\Exception\ClientResponseException;
@@ -28,9 +29,10 @@ class ArticleRepository
     /**
      * @param string $query
      * @param string $locale
-     * @return Collection|void
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function search(string $query = '', string $locale)//: Collection
+    public function search(string $query = '', string $locale): Collection
     {
         try {
             $items = $this->searchOnElasticsearch($query, $locale);
@@ -38,6 +40,21 @@ class ArticleRepository
         } catch (ClientResponseException|ServerResponseException $e) {
         }
 
+    }
+
+    /**
+     * @param string $query
+     * @param string $locale
+     * @param \App\Models\Category $category
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function searchCategoryArticles(string $query = '', string $locale, Category $category): Collection
+    {
+        try {
+            $items = $this->searchOnElasticByCategory($query, $locale, $category);
+            return $this->buildCollection($items);
+        } catch (ClientResponseException|ServerResponseException $e){}
     }
 
     /**
@@ -71,6 +88,30 @@ class ArticleRepository
         return $items->asArray();
     }
 
+    public function searchOnElasticByCategory(string $query, string $locale, Category $category) {
+
+        $model = new Article;
+        $items = $this->elasticsearch->search([
+            'index' => $model->getSearchIndex(),
+            'type' => $model->getType(),
+            'body' => [
+                'query' => [
+                    'bool' => [
+                        'must' => [
+                            ['match' => ['category_id' => $category->getId()]],
+                            ['match' => ['translations.title' => $query]],
+                            ['match' => ['translations.locale' => $locale]]
+                        ]
+                    ],
+
+                ]
+            ],
+            'size' => 100,
+            'from' => 0
+        ]);
+        return $items->asArray();
+    }
+
     private function buildCollection(array $items): Collection
     {
         $ids = \Arr::pluck($items['hits']['hits'], '_id');
@@ -93,6 +134,15 @@ class ArticleRepository
             ->sortBy(function ($article) use ($publishedIds){
                 return array_search($article->getId(), $publishedIds);
             });
+
+    }
+
+    //////////////// Elastic search index operations
+
+    public function getElasticIndex()
+    {
+        $indexes = $this->elasticsearch->get(['index'=>'articles'])->asArray();
+        dump($indexes);
 
     }
 

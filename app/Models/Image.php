@@ -18,6 +18,8 @@ class Image extends Model implements TranslatableContract
 
     protected $service;
 
+    //TODO: to add full path to image
+
     public function __construct()
     {
         parent::__construct();

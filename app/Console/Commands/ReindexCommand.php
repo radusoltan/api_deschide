@@ -41,30 +41,36 @@ class ReindexCommand extends Command
      */
     public function handle()
     {
+
         $this->info('Indexing all articles. This might take a while...');
 
         foreach (Article::cursor() as $article){
-            // dd($article->toSearchArray());
-            $this->elasticsearch->index([
-                'index' => $article->getSearchIndex(),
-                 'type' => $article->getType(),
-                'id' => $article->getId(),
-                'body' => $article->toSearchArray()
-            ]);
+             if($article->status === 'P') {
+
+                 $this->elasticsearch->index([
+                     'index' => $article->getSearchIndex(),
+                     'type' => $article->getType(),
+                     'id' => $article->getId(),
+                     'body' => $article->toSearchArray()
+                 ]);
+             }
+
             $this->output->write('.');
         }
+//        die;
 
-        $this->info('Indexing all authors. This might take a while...');
+//        $this->info('Indexing all authors. This might take a while...');
 
-        foreach (Author::cursor() as $author){
-            $this->elasticsearch->index([
-                'index' => $author->getSearchIndex(),
-                'type' => $author->getType(),
-                'id' => $author->getId(),
-                'body' => $author->toSearchArray()
-            ]);
-            $this->output->write('.');
-        }
+
+//        foreach (Author::cursor() as $author){
+//            $this->elasticsearch->index([
+//                'index' => $author->getSearchIndex(),
+//                'type' => $author->getType(),
+//                'id' => $author->getId(),
+//                'body' => $author->toSearchArray()
+//            ]);
+//            $this->output->write('.');
+//        }
 
         $this->output->write('Done !');
 
