@@ -24,14 +24,14 @@ class ReindexCommand extends Command
      */
     protected $description = 'Indexes all articles to Elasticsearch';
 
-    /** @var Elastic\Elasticsearch\Client */
-    private $elasticsearch;
 
-    public function __construct(Client $elasticsearch)
+//    private $elasticsearch;
+
+    public function __construct()
     {
         parent::__construct();
 
-        $this->elasticsearch = $elasticsearch;
+//        $this->elasticsearch = $elasticsearch;
     }
 
     /**
@@ -44,19 +44,19 @@ class ReindexCommand extends Command
 
         $this->info('Indexing all articles. This might take a while...');
 
-        foreach (Article::cursor() as $article){
-             if($article->status === 'P') {
-
-                 $this->elasticsearch->index([
-                     'index' => $article->getSearchIndex(),
-                     'type' => $article->getType(),
-                     'id' => $article->getId(),
-                     'body' => $article->toSearchArray()
-                 ]);
-             }
-
-            $this->output->write('.');
-        }
+//        foreach (Article::cursor() as $article){
+//             if($article->status === 'P') {
+//
+//                 $this->elasticsearch->index([
+//                     'index' => $article->getSearchIndex(),
+//                     'type' => $article->getType(),
+//                     'id' => $article->getId(),
+//                     'body' => $article->toSearchArray()
+//                 ]);
+//             }
+//
+//            $this->output->write('.');
+//        }
 //        die;
 
 //        $this->info('Indexing all authors. This might take a while...');
