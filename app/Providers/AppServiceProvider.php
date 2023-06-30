@@ -20,15 +20,15 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
 
-        $this->app->bind(ArticleRepository::class, function ($app){
-
-            return new ArticleRepository(
-                $app->make(Client::class)
-            );
-
-        });
-
-        $this->bindSearchClient();
+//        $this->app->bind(ArticleRepository::class, function ($app){
+//
+//            return new ArticleRepository(
+//                $app->make(Client::class)
+//            );
+//
+//        });
+//
+//        $this->bindSearchClient();
     }
 
     private function bindSearchClient()
@@ -37,8 +37,6 @@ class AppServiceProvider extends ServiceProvider
             return ClientBuilder::create()
                 ->setHosts(config('services.search.hosts'))
                 ->setBasicAuthentication(config('services.search.user'), config('services.search.pass'))
-//                ->setCABundle('http_ca.crt')
-                ->setSSLVerification(false)
                 ->build();
         });
     }
