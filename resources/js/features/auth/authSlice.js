@@ -15,18 +15,18 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    // logout: (state) => {
-    //   localStorage.removeItem("userToken")
-    //   localStorage.removeItem("userInfo")
-    //   state.loading = false
-    //   state.userInfo = null
-    //   state.userToken = null
-    //   state.error = null
-    //   state.success = false
-    // },
+    logout: (state) => {
+      localStorage.removeItem("userToken")
+      localStorage.removeItem("userInfo")
+      state.loading = false
+      state.userInfo = null
+      state.userToken = null
+      state.error = null
+      state.success = false
+    },
     setCredentials: (state, {payload}) => {
       localStorage.setItem('userToken',payload.token)
-      localStorage.setItem('userInfo',payload.user)
+      localStorage.setItem('userInfo',JSON.stringify(payload.user))
     }
   },
   extraReducers: {
@@ -44,16 +44,6 @@ const authSlice = createSlice({
     [userLogin.rejected]: (state, {payload}) => {
       state.loading = false
       state.error = payload
-    },
-    [userLogout.pending]: (state) => {
-      console.log('userLogout.pending')
-    },
-    [userLogout.fulfilled]: (state, {payload}) => {
-      console.log('userLogout.fulfilled',payload)
-    },
-    [userLogout.rejected]: (state, {payload}) => {
-      console.log('userLogout.rejected',payload)
-
     }
   }
 })

@@ -9,7 +9,6 @@ export const Protected = () => {
 
   const userInfo = JSON.parse(localStorage.getItem('userInfo'))
 
-
   if (!userInfo){
 
     return <Navigate to="/login" />

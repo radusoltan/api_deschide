@@ -1,18 +1,27 @@
 import {Button, Layout, Select, Space} from "antd"
-import React, {useState} from "react"
+import React, {useEffect, useState} from "react"
 import {MenuFoldOutlined, MenuUnfoldOutlined} from "@ant-design/icons"
 import {Outlet} from "react-router-dom"
 import {useDispatch} from "react-redux"
-import {logout} from "../features/auth/authSlice"
-import {userLogout} from "../features/auth/authActions"
+import {useGetUserDetailsQuery} from "../services/auth";
+import {setCredentials} from "../features/auth/authSlice";
 
 export const MainLayout = () => {
+  const {data, isFetching} = useGetUserDetailsQuery('userDetails',{
+    pollingInterval: 100000
+  })
   const {Header, Sider, Content} = Layout
   const [collapsed, setCollapsed] = useState(false)
   const dispatch = useDispatch()
 
+  useEffect(() => {
+    if (data){
+      dispatch(setCredentials(data))
+    }
+  }, [data, dispatch])
+
   const handleLogout = () => {
-    dispatch(userLogout({}))
+    console.log('logout')
   }
   const changeLang = () => {}
 
