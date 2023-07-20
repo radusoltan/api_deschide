@@ -3,8 +3,6 @@ import React, {useState} from "react"
 import {MenuFoldOutlined, MenuUnfoldOutlined} from "@ant-design/icons"
 import {Outlet} from "react-router-dom"
 import {useDispatch} from "react-redux"
-import {logout} from "../features/auth/authSlice"
-import {userLogout} from "../features/auth/authActions"
 
 export const MainLayout = () => {
   const {Header, Sider, Content} = Layout
@@ -12,7 +10,7 @@ export const MainLayout = () => {
   const dispatch = useDispatch()
 
   const handleLogout = () => {
-    dispatch(userLogout({}))
+    console.log('logout')
   }
   const changeLang = () => {}
 

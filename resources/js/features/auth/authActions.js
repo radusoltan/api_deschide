@@ -23,24 +23,3 @@ export const userLogin = createAsyncThunk(
       }
     }
 )
-
-export const userLogout = createAsyncThunk(
-    "auth/logout",
-  async ({},{rejectWithValue}) => {
-      try {
-        const response = await axios.post(`/logout`, {},{
-          headers: {
-            "Authorization": `Bearer ${localStorage.getItem("userToken")}`
-          }
-        })
-
-        if (response.status === 204){
-          return {
-            success: true
-          }
-        }
-      } catch (e) {
-        return rejectWithValue(e.response)
-      }
-  }
-)
