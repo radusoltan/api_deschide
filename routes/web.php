@@ -17,18 +17,15 @@ use Shieldon\Firewall\Panel;
 |
 */
 
-Route::get('/', function () {
-//    phpinfo();
-    return ['Laravel' => app()->version()];
-});
 
-Route::any('/firewall/panel/{path?}', function() {
 
-    $panel = new Panel();
-    $panel->csrf(['_token' => csrf_token()]);
-    $panel->entry();
-
-})->where('path', '(.*)');
+//Route::any('/firewall/panel/{path?}', function() {
+//
+//    $panel = new Panel();
+//    $panel->csrf(['_token' => csrf_token()]);
+//    $panel->entry();
+//
+//})->where('path', '(.*)');
 
 //public routes
 Route::get('/categories', [CategoryController::class,'getAllPublishedCategories'])->middleware('firewall');
@@ -52,3 +49,4 @@ Route::get('/import',[\App\Http\Controllers\FacebookController::class, 'RssArtic
 //social media routes
 Route::get('auth/facebook', [FacebookSocialiteController::class, 'redirectToFB']);
 Route::get('login/facebook/callback', [FacebookSocialiteController::class, 'handleCallback']);
+Route::view('/{path?}','welcome')->where('path','.*');
