@@ -2,10 +2,19 @@ import i18n from 'i18next'
 import {initReactI18next} from "react-i18next"
 import LanguageDetector from "i18next-browser-languagedetector"
 import HttpApi from "i18next-http-backend"
+import ru from './translations/ru/admin.json'
+import en from './translations/en/admin.json'
+import ro from './translations/ro/admin.json'
 const resources = {
-    ro: {},
-    en: {},
-    ru: {}
+    ro: {
+      translation: ro
+    },
+    en: {
+      translation: en
+    },
+    ru: {
+      translation: ru
+    }
 }
 
 i18n

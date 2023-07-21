@@ -1,0 +1,15 @@
+{
+    "menu": {
+        "dashboard": "Panou de bord",
+        "content": {
+            "head": "Conținut",
+            "categories": "Categorii"
+        },
+        "management": {
+            "head": "Management",
+            "users": "Utilizatori",
+            "roles": "Roluri",
+            "permissions": "Permisiuni"
+        }
+    }
+}

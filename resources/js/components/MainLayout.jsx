@@ -5,8 +5,10 @@ import {Outlet} from "react-router-dom"
 import {useDispatch} from "react-redux"
 import {useGetUserDetailsQuery} from "../services/auth";
 import {setCredentials, deleteCredentials} from "../features/auth/authSlice";
+import {Navigation} from "./Navigation";
 
 export const MainLayout = () => {
+
   const {data, isFetching} = useGetUserDetailsQuery('userDetails',{
     pollingInterval: 100000
   })
@@ -33,6 +35,8 @@ export const MainLayout = () => {
       collapsed={collapsed}
       breakpoint="lg"
     >
+      <div className="demo-logo-vertical" />
+      <Navigation />
 
     </Sider>
     <Layout className="site-layout">
