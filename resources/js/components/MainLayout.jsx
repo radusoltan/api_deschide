@@ -4,7 +4,7 @@ import {MenuFoldOutlined, MenuUnfoldOutlined} from "@ant-design/icons"
 import {Outlet} from "react-router-dom"
 import {useDispatch} from "react-redux"
 import {useGetUserDetailsQuery} from "../services/auth";
-import {setCredentials} from "../features/auth/authSlice";
+import {setCredentials, deleteCredentials} from "../features/auth/authSlice";
 
 export const MainLayout = () => {
   const {data, isFetching} = useGetUserDetailsQuery('userDetails',{
@@ -21,7 +21,8 @@ export const MainLayout = () => {
   }, [data, dispatch])
 
   const handleLogout = () => {
-    console.log('logout')
+    dispatch(deleteCredentials())
+    window.location.href = '/login'
   }
   const changeLang = () => {}
 
