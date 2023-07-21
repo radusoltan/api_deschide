@@ -3,14 +3,16 @@
 namespace App\Observers;
 
 use App\Models\Category;
-use Elastic\Elasticsearch\Client;
+//use Elastic\Elasticsearch\Client;
 use Elastic\Elasticsearch\Exception\ClientResponseException;
 use Elastic\Elasticsearch\Exception\MissingParameterException;
 use Elastic\Elasticsearch\Exception\ServerResponseException;
 
 class CategoryObserver
 {
-    public function __construct(private Client $elasticsearchClient)
+    public function __construct(
+//        private Client $elasticsearchClient
+    )
     {
     }
 

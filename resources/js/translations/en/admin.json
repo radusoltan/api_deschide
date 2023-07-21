@@ -1,0 +1,15 @@
+{
+    "menu": {
+        "dashboard": "Dashboard",
+        "content": {
+            "head": "Content",
+            "categories": "Categories"
+        },
+        "management": {
+            "head": "Management",
+            "users": "Users",
+            "roles": "Roles",
+            "permissions": "Permissions"
+        }
+    }
+}

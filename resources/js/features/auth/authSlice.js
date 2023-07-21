@@ -25,11 +25,9 @@ const authSlice = createSlice({
       state.success = false
     },
     setCredentials: (state, {payload}) => {
-      localStorage.setItem('userToken',payload.token)
       localStorage.setItem('userInfo',JSON.stringify(payload.user))
     },
     deleteCredentials: (state) => {
-      localStorage.removeItem('userToken')
       localStorage.removeItem('userInfo')
     }
   },
@@ -40,7 +38,6 @@ const authSlice = createSlice({
       state.error = null
     },
     [userLogin.fulfilled]: (state, {payload}) => {
-      localStorage.setItem("userToken", payload.token)
       localStorage.setItem("userInfo", JSON.stringify(payload.user))
       state.loading = false
       state.success = true

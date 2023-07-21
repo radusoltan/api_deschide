@@ -67,6 +67,7 @@ class CategoryController extends Controller
      */
     public function update(Request $request, Category $category): Category
     {
+        dump($request->all());
 
         app()->setLocale($request->get('lng'));
 
@@ -112,32 +113,35 @@ class CategoryController extends Controller
      * @param Category $category
      *
      */
-    public function categoryArticles(Category $category, ArticleRepository $repository)//: LengthAwarePaginator
+    public function categoryArticles(
+        Category $category,
+//        ArticleRepository $repository
+    )//: LengthAwarePaginator
     {
         $term = request('term');
         $locale = request('locale');
         app()->setLocale($locale);
-        if (request()->has('term') && !is_null($term)){
-
-            $searchResults = $repository->searchCategoryArticles($term, $locale, $category);
-
-            return new LengthAwarePaginator(
-                $searchResults->values(),
-                $searchResults->count(),
-                10,
-                request('page'),
-                [
-                    'path' => env('APP_URL').'/category/'.$category->getId().'/search?term='.\request('term').'&page='.\request('page'),
-
-                ]
-            );
-
-        } else {
+//        if (request()->has('term') && !is_null($term)){
+//
+//            $searchResults = $repository->searchCategoryArticles($term, $locale, $category);
+//
+//            return new LengthAwarePaginator(
+//                $searchResults->values(),
+//                $searchResults->count(),
+//                10,
+//                request('page'),
+//                [
+//                    'path' => env('APP_URL').'/category/'.$category->getId().'/search?term='.\request('term').'&page='.\request('page'),
+//
+//                ]
+//            );
+//
+//        } else {
             return $category->articles()
                 ->translatedIn(request('locale'))
                 ->orderBy('created_at', 'DESC')
                 ->paginate(10);
-        }
+//        }
 
     }
 }

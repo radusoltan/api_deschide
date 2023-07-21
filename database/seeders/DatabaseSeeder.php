@@ -18,7 +18,7 @@ class DatabaseSeeder extends Seeder
             UserTableSeeder::class,
             PermissionTableSeeder::class,
             CreateAdminUserSeeder::class,
-//            CategoryTableSeeder::class,
+            CategoryTableSeeder::class,
 //            AuthorsTableSeeder::class,
 //            ArticleTableSeeder::class,
 //            ImageTableSeeder::class,
