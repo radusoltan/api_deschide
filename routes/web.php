@@ -27,6 +27,17 @@ use Shieldon\Firewall\Panel;
 //
 //})->where('path', '(.*)');
 
+Route::get('/', function (\Elastic\Elasticsearch\Client $client){
+    $params = [
+        'index' => 'articles',
+        'id' => '988'
+    ];
+
+    $response = $client->get($params);
+
+    dump($response->asObject());
+});
+
 //public routes
 Route::get('/categories', [CategoryController::class,'getAllPublishedCategories'])->middleware('firewall');
 //Route::get('/category/{slug}',[CategoryController::class,'getCategory']);

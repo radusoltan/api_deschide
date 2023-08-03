@@ -28,7 +28,7 @@ class AppServiceProvider extends ServiceProvider
 //
 //        });
 //
-//        $this->bindSearchClient();
+        $this->bindSearchClient();
     }
 
     private function bindSearchClient()
@@ -37,6 +37,7 @@ class AppServiceProvider extends ServiceProvider
             return ClientBuilder::create()
                 ->setHosts(config('services.search.hosts'))
                 ->setBasicAuthentication(config('services.search.user'), config('services.search.pass'))
+                ->setCABundle('/var/www/deschide_api/http_ca.crt')
                 ->build();
         });
     }

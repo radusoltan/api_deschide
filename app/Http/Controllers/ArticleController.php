@@ -59,9 +59,9 @@ class ArticleController extends Controller
     public function show(Article $article)
     {
 
-        app()->setLocale(request('locale'));
+//        app()->setLocale(request('locale'));
         $article->vzt()->increment();
-        return $article->load('visits','images');
+        return $article->load('visits','images', 'authors');
     }
 
     /**
