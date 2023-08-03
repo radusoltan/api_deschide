@@ -7,6 +7,7 @@ use App\Http\Requests\Auth\LoginRequest;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -14,15 +15,19 @@ class AuthenticatedSessionController extends Controller
      * Handle an incoming authentication request.
      *
      * @param LoginRequest $request
-     * @return Response
+     * @return \Illuminate\Http\JsonResponse
+     * @throws ValidationException
      */
-    public function store(LoginRequest $request)
+    public function store(LoginRequest $request): \Illuminate\Http\JsonResponse
     {
         $request->authenticate();
 
         $request->session()->regenerate();
 
-        return response()->noContent();
+        return response()->json([
+            'user' => $request->user(),
+            'token' => $request->user()->createToken('deshideApi')->plainTextToken
+        ]);
     }
 
     /**

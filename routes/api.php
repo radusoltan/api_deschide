@@ -28,12 +28,10 @@ use App\Search\ElasticsearchRepository;
 */
 
 Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
-    return response()->json([
-        'user' => $request->user()
-    ]);
+    return $request->user();
 });
 
-Route::post('login',[AuthController::class,'login']);
+Route::post('login',[AuthenticatedSessionController::class,'store']);
 
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
     ->middleware('auth')

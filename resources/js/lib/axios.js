@@ -1,7 +1,7 @@
 import Axios from "axios"
 
 const axios = Axios.create({
-    baseURL: `${process.env.MIX_APP_URL}/api`,
+    baseURL: process.env.MIX_APP_URL+"/api",
     withCredentials: true,
     headers: {
         "X-Requested-With": "XMLHttpRequest",
