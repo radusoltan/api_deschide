@@ -1,24 +1,28 @@
 import { LockOutlined, UserOutlined } from '@ant-design/icons'
-import { Button, Checkbox, Form, Input } from 'antd'
-import axios from "../lib/axios";
-import {Navigate, useNavigate} from "react-router-dom";
+import {Button, Checkbox, Form, Input, Spin} from 'antd'
+import {useNavigate} from "react-router-dom";
 import {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {userLogin} from "../features/auth/authActions";
+import {userLogin} from "../features/auth/authActions"
 export const Login = () => {
-  const {loading, userInfo, error, success} = useSelector(state => state.auth)
+  const {loading, error, success} = useSelector(state => state.auth)
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
   useEffect(()=>{
-    // if (userInfo) {
-    //   navigate('/')
-    // }
+
+    if (error) {}
+
+    if (localStorage.getItem('userInfo')) {
+      navigate('/')
+    }
     if (success) {
       navigate('/')
     }
-  },[navigate, userInfo, loading])
-
+  },[navigate, loading, success])
+  if (loading) {
+    return <Spin />
+  }
   const onFinish = async ({email, password, remember}) => {
     dispatch(
       userLogin({email, password, remember})

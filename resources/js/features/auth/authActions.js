@@ -23,3 +23,20 @@ export const userLogin = createAsyncThunk(
       }
     }
 )
+
+export const userLogout = createAsyncThunk(
+  "auth/logout",
+  async (_, {rejectWithValue}) => {
+    try {
+      await axios.post(`/logout`)
+
+      return true
+    } catch (e) {
+      if (e.response && e.response.data){
+        return rejectWithValue(e.response.data.message)
+      } else {
+        return rejectWithValue(e.message)
+      }
+    }
+  }
+)
