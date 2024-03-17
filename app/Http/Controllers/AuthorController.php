@@ -17,10 +17,14 @@ class AuthorController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return _IH_Author_C|Author[]|Collection
+     *
      */
-    public function index(): Collection
+    public function index()//: Collection
     {
+        return Author::paginate(10);
+    }
+
+    public function getAllAuthors() {
         return Author::all();
     }
 
@@ -42,25 +46,42 @@ class AuthorController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'first_name' => 'required',
+            'last_name' => 'required',
+//            'email' => 'required|string|email|unique:authors,email',
+            'locale' => 'required'
+        ]);
+        app()->setLocale($request->get('locale'));
+
+        $author = Author::create([
+            'first_name' => $request->get('first_name'),
+            'last_name' => $request->get('last_name'),
+            'full_name' => $request->get('first_name').' '.$request->get('last_name'),
+            'slug' => \Str::slug($request->get('first_name').' '.$request->get('last_name'))
+        ]);
+
+        return $author;
     }
 
     /**
      * Display the specified resource.
      *
      * @param  \App\Models\Author  $author
-     * @return \Illuminate\Http\Response
+     *
+     * @return \App\Models\Author
      */
     public function show(Author $author)
     {
-        //
+        return $author;
     }
 
     /**
      * Show the form for editing the specified resource.
      *
      * @param  \App\Models\Author  $author
-     * @return \Illuminate\Http\Response
+     *
+     *
      */
     public function edit(Author $author)
     {
@@ -72,22 +93,34 @@ class AuthorController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Author  $author
-     * @return \Illuminate\Http\Response
+     *
+     * @return \App\Models\Author
      */
     public function update(Request $request, Author $author)
     {
-        //
+        app()->setLocale($request->get('locale'));
+
+        $author->update([
+            'first_name' => $request->get('first_name'),
+            'last_name' => $request->get('last_name'),
+            'full_name' => $request->get('first_name').' '.$request->get('last_name'),
+            'email' => $request->get('email'),
+            'facebook' => $request->get('facebook'),
+            'slug' => \Str::slug($request->get('first_name').' '.$request->get('last_name'))
+        ]);
+        return $author;
     }
 
     /**
      * Remove the specified resource from storage.
      *
      * @param  \App\Models\Author  $author
-     * @return \Illuminate\Http\Response
+     *
+     * @return bool
      */
     public function destroy(Author $author)
     {
-        //
+        return $author->delete();
     }
 
     /**

@@ -28,7 +28,12 @@ use App\Search\ElasticsearchRepository;
 */
 
 Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
-    return $request->user();
+//    return $request->user()->load('roles','permissions');
+
+    return response()->json([
+        'user' => $request->user(),
+        'permissions' => $request->user()->permissions()->pluck('name')
+    ]);
 });
 
 Route::post('login',[AuthenticatedSessionController::class,'store']);
@@ -43,19 +48,11 @@ Route::group(['prefix' => 'public'], function (){
     Route::get('category/{slug}',[\App\Http\Controllers\Public\CategoryController::class,'getCategory']);
     Route::get('category/{category}/articles',[\App\Http\Controllers\Public\CategoryController::class,'getCategoryPublishedArticles']);
     Route::get('articles',[\App\Http\Controllers\Public\ArticleController::class,'getAllPublishedArticles']);
-    Route::get('/article/{slug}',[\App\Http\Controllers\Public\ArticleController::class,'getArticle']);
+    Route::get('article/{article}',[\App\Http\Controllers\Public\ArticleController::class,'getArticleById']);
+//    Route::get('/articleById/{article}',[\App\Http\Controllers\Public\ArticleController::class,'getArticleById']);
 });
 
-Route::get('published',[ArticleController::class,'getPublishedArticles']);
-Route::get('/published/{category}',[ArticleController::class,'getPublishedArticlesByCategory']);
 
-Route::get('/search', function(\App\Repositories\ArticleRepository $articleRepository){
-
-
-    return $articleRepository->search(request('q'), request('locale'));
-//    return $articleRepository->search();
-
-});
 
 Route::group(['middleware'=>['auth:sanctum']], function(){
 
@@ -105,7 +102,8 @@ Route::group(['middleware'=>['auth:sanctum']], function(){
     Route::apiResource('/permissions', PermissionsController::class);
 
     //AUTHORS
-    Route::get('/authors',[AuthorController::class, 'index']);
+    Route::apiResource('/authors', AuthorController::class);
+    Route::get('/all-authors',[AuthorController::class, 'getAllAuthors']);
     Route::get('/article/{article}/authors',[AuthorController::class, 'getArticleAuthors']);
     Route::post('/article/{article}/authors',[AuthorController::class, 'addArticleAuthors']);
     Route::post('/authors/search', [AuthorController::class ,'search']);

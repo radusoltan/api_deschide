@@ -4,6 +4,9 @@ namespace App\Observers;
 
 use App\Models\Article;
 use Elastic\Elasticsearch\Client;
+use Elastic\Elasticsearch\Exception\ClientResponseException;
+use Elastic\Elasticsearch\Exception\MissingParameterException;
+use Elastic\Elasticsearch\Exception\ServerResponseException;
 
 class ArticleObserver
 {
@@ -38,8 +41,11 @@ class ArticleObserver
      */
     public function updated(Article $article): void
     {
-//        dump($article);
-         $article->elasticsearchUpdate($this->elasticsearchClient);
+
+        try {
+            $article->elasticsearchUpdate($this->elasticsearchClient);
+        } catch (ClientResponseException|MissingParameterException|ServerResponseException $e) {
+        }
     }
 
     /**
@@ -62,7 +68,7 @@ class ArticleObserver
     public function restored(Article $article)
     {
 
-        // $article->elasticsearchIndex($this->elasticsearchClient);
+         $article->elasticsearchIndex($this->elasticsearchClient);
     }
 
     /**

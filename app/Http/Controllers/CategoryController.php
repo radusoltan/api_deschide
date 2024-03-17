@@ -21,7 +21,7 @@ class CategoryController extends Controller
     public function index()
     {
         // dump();
-        app()->setLocale(request('locale'));
+//        app()->setLocale(request('locale'));
 
         return Category::paginate(10);
     }
@@ -67,7 +67,7 @@ class CategoryController extends Controller
      */
     public function update(Request $request, Category $category): Category
     {
-        dump($request->all());
+//        dump($request->all());
 
         app()->setLocale($request->get('lng'));
 
@@ -120,7 +120,7 @@ class CategoryController extends Controller
     {
         $term = request('term');
         $locale = request('locale');
-        app()->setLocale($locale);
+//        app()->setLocale($locale);
 //        if (request()->has('term') && !is_null($term)){
 //
 //            $searchResults = $repository->searchCategoryArticles($term, $locale, $category);
@@ -138,7 +138,7 @@ class CategoryController extends Controller
 //
 //        } else {
             return $category->articles()
-                ->translatedIn(request('locale'))
+//                ->translatedIn(request('locale'))
                 ->orderBy('created_at', 'DESC')
                 ->paginate(10);
 //        }

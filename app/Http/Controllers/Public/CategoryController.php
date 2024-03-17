@@ -24,18 +24,26 @@ class CategoryController extends Controller
              ->join('category_translations','category_translations.category_id','=', 'categories.id')
              ->where([
                  ['in_menu', true],
-                 ['category_translations.locale','=', $locale]
+                 ['category_translations.locale','=', $locale],
 
              ])->get();
 //        dump($categories);
          foreach ($categories as $category){
             $res[] = [
                 'name'=>$category->title,
-                'slug'  => $category->slug
+                'slug'  => $category->slug,
             ];
          }
 //        dump($res);
          return $res;
+
+    }
+
+    public function getCategoryBySlug($slug) {
+        $locale = request()->get('locale');
+
+        $translation = CategoryTranslation::where('slug', $slug)->where('locale',$locale)->first();
+        return Category::find($translation->category_id);
 
     }
 
@@ -61,16 +69,19 @@ class CategoryController extends Controller
         foreach ($articles as $article){
 //            dump($article->visits()->get());
             $lastArticles[] = [
+                'id' => $article->id,
                 'title' => $article->title,
                 'slug' => $article->slug,
                 'lead' => $article->lead,
                 'category' => $category,
                 'images' => $article->images()->with('thumbnails')->get(),
-                'visits' => visits($article)->count()
+                'visits' => visits($article)->count(),
+                'trans' => $article->translations()
             ];
         }
 
         return [
+            'category' => $category,
             'last_articles' => $lastArticles,
 //            'popular' => $popularArticles
         ];

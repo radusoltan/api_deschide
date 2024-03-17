@@ -29,25 +29,13 @@ class AppServiceProvider extends ServiceProvider
 //        });
 //
 //        $this->bindSearchClient();
-    }
 
-    private function bindSearchClient()
-    {
-        $this->app->bind(Client::class, function () {
+        $this->app->bind(Client::class, function (){
             return ClientBuilder::create()
-                ->setHosts(config('services.search.hosts'))
-                ->setBasicAuthentication(config('services.search.user'), config('services.search.pass'))
+                ->setHosts(['https://localhost:9200'])
+                ->setBasicAuthentication(config('services.search.user'),config('services.search.pass'))
+                ->setCABundle(base_path().'/http_ca.crt')
                 ->build();
-        });
-    }
-
-    private function bindFacebook(){
-        $this->app->bind(Facebook::class, function (){
-            return new Facebook([
-                'app_id' => config('services.facebook.client_id'),
-                'app_secret' => config('services.facebook.client_secret'),
-                'default_graph_version' => config('services.facebook.default_graph_version'),
-            ]);
         });
     }
 
@@ -59,18 +47,18 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Collection::macro('paginate', function($perPage, $total = null, $page = null, $pageName = 'page' ){
-            $page = $page ?: LengthAwarePaginator::resolveCurrentPage($pageName);
-            return new LengthAwarePaginator(
-                $this->forPage($page, $perPage),
-                $total ?: $this->count(),
-                $perPage,
-                $page,
-                [
-                    'path' => LengthAwarePaginator::resolveCurrentPath(),
-                    'pageName' => $pageName
-                ]
-            );
-        });
+//        Collection::macro('paginate', function($perPage, $total = null, $page = null, $pageName = 'page' ){
+//            $page = $page ?: LengthAwarePaginator::resolveCurrentPage($pageName);
+//            return new LengthAwarePaginator(
+//                $this->forPage($page, $perPage),
+//                $total ?: $this->count(),
+//                $perPage,
+//                $page,
+//                [
+//                    'path' => LengthAwarePaginator::resolveCurrentPath(),
+//                    'pageName' => $pageName
+//                ]
+//            );
+//        });
     }
 }

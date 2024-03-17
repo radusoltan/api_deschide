@@ -8,10 +8,10 @@ use Elastic\Elasticsearch\Client;
 
 class ArticleTranslationObserver
 {
-    private $elastic;
-    public function __construct(Client $elastic){
-        $this->elastic = $elastic;
-    }
+//    private $elastic;
+//    public function __construct(Client $elastic){
+//        $this->elastic = $elastic;
+//    }
     /**
      * Handle the ArticleTranslation "created" event.
      */

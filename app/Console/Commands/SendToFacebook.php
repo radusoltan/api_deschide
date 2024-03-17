@@ -46,7 +46,7 @@ class SendToFacebook extends Command
     public function handle()
     {
         $this->info('Posting on Facebook...');
-        $feed = simplexml_load_file('https://deschide.md/ro/feed');
+        $feed = simplexml_load_file('https://deschide.md/ro/feed/');
 
         $newscount = 3;
 

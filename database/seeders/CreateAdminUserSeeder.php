@@ -22,9 +22,10 @@ class CreateAdminUserSeeder extends Seeder
 
         $permissions = Permission::pluck('id','id')->all();
 
-        $role->syncPermissions($permissions);
+        $role->givePermissionTo(Permission::all());
 
         $user->assignRole([$role->id]);
+        $user->givePermissionTo($permissions);
 
     }
 }
