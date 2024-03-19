@@ -36,7 +36,10 @@ class PublishArticles extends Command
         foreach ($translations as $translation){
             $dateToPublish = Carbon::parse($translation->publish_at);
             $dateNow = Carbon::now();
-            if ($dateToPublish->format('H') == Carbon::now()->format('H') && $dateToPublish->format('i') == Carbon::now()->format('i')) {
+            if (
+                $dateToPublish->format('H') == Carbon::now()->format('H') &&
+                $dateToPublish->format('i') == Carbon::now()->format('i')
+            ) {
                 app()->setLocale($translation->locale);
                 $translation->update([
                     'status' => 'P',
