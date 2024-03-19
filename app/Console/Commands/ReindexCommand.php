@@ -25,13 +25,13 @@ class ReindexCommand extends Command
     protected $description = 'Indexes all articles to Elasticsearch';
 
 
-//    private $elasticsearch;
+    private $elasticsearch;
 
-    public function __construct()
+    public function __construct(Client $elasticsearch)
     {
         parent::__construct();
 
-//        $this->elasticsearch = $elasticsearch;
+        $this->elasticsearch = $elasticsearch;
     }
 
     /**
@@ -44,33 +44,33 @@ class ReindexCommand extends Command
 
         $this->info('Indexing all articles. This might take a while...');
 
-//        foreach (Article::cursor() as $article){
-//             if($article->status === 'P') {
-//
-//                 $this->elasticsearch->index([
-//                     'index' => $article->getSearchIndex(),
-//                     'type' => $article->getType(),
-//                     'id' => $article->getId(),
-//                     'body' => $article->toSearchArray()
-//                 ]);
-//             }
-//
-//            $this->output->write('.');
-//        }
-//        die;
+        foreach (Article::cursor() as $article){
+             if($article->status === 'P') {
 
-//        $this->info('Indexing all authors. This might take a while...');
+                 $this->elasticsearch->index([
+                     'index' => $article->getSearchIndex(),
+                     'type' => $article->getType(),
+                     'id' => $article->getId(),
+                     'body' => $article->toSearchArray()
+                 ]);
+             }
+
+            $this->output->write('.');
+        }
 
 
-//        foreach (Author::cursor() as $author){
-//            $this->elasticsearch->index([
-//                'index' => $author->getSearchIndex(),
-//                'type' => $author->getType(),
-//                'id' => $author->getId(),
-//                'body' => $author->toSearchArray()
-//            ]);
-//            $this->output->write('.');
-//        }
+        $this->info('Indexing all authors. This might take a while...');
+
+
+        foreach (Author::cursor() as $author){
+            $this->elasticsearch->index([
+                'index' => $author->getSearchIndex(),
+                'type' => $author->getType(),
+                'id' => $author->getId(),
+                'body' => $author->toSearchArray()
+            ]);
+            $this->output->write('.');
+        }
 
         $this->output->write('Done !');
 

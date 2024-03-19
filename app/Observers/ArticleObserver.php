@@ -67,7 +67,6 @@ class ArticleObserver
      */
     public function restored(Article $article)
     {
-
         $article->elasticsearchIndex($this->elasticsearchClient);
     }
 

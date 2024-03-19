@@ -1,10 +1,12 @@
 <?php
 
 use App\Http\Controllers\FacebookSocialiteController;
+use Elastic\Elasticsearch\ClientBuilder;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Public\CategoryController;
 use App\Http\Controllers\Public\ArticleController;
 use Shieldon\Firewall\Panel;
+use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,46 +20,72 @@ use Shieldon\Firewall\Panel;
 */
 
 
+Route::get('test', function (){
 
-//Route::any('/firewall/panel/{path?}', function() {
-//
-//    $panel = new Panel();
-//    $panel->csrf(['_token' => csrf_token()]);
-//    $panel->entry();
-//
-//})->where('path', '(.*)');
+    $service = new \App\Services\ImageService();
 
-Route::get('/', function (\Elastic\Elasticsearch\Client $client){
-    $params = [
-        'index' => 'articles',
-        'id' => '988'
-    ];
+    $image = Image::make('https://dummyimage.com/1600x900/a8a8a8/fff&text=Main+1600x900');
+    $image->save(storage_path('app/public/images/main.jpg'));
+    $imageFile = new \Illuminate\Http\UploadedFile(
+        $image->basePath(),
+        $image->basename,
+        $image->mime,
+        0,
+        true
+    );
+    $service->uploadImage($imageFile);
+//    dump($imageFile->getRealPath());
 
-    $response = $client->get($params);
-
-    dump($response->asObject());
 });
 
-//public routes
-Route::get('/categories', [CategoryController::class,'getAllPublishedCategories'])->middleware('firewall');
-//Route::get('/category/{slug}',[CategoryController::class,'getCategory']);
-Route::get('/published-articles',[ArticleController::class,'getAllPublishedArticles']);
+Route::get('last-published',[ArticleController::class,'getLastPublishedArticles']);
+Route::get('article/{article}',[ArticleController::class,'getArticleById']);
+Route::get('category/{slug}', [CategoryController::class,'getCategory']);
+Route::get('categories',function (){
+    return \App\Models\Category::all();
+});
+
+Route::get('/',function(\Elastic\Elasticsearch\Client $client){
+    $locale = request()->get('locale');
+    dump('here');
+
+//    $params = [
+//        'index' => 'articles',
+//        'type' => '_doc',
+//        'size' => 10,
+//        'body'   => [
+//            'query' => [
+//                'match' => [
+//                    "translations.locale" => $locale
+//                ]
+//            ],
+//            'sort' => [
+//                'created_at' => [
+//                    'order' => 'desc',
+//                    'unmapped_type' => 'date', // Optional, if the field type is not explicitly mapped
+//                ],
+//            ],
+//        ]
+//    ];
+//
+//    $response = $client->search($params)->asArray();
+//    $obj = $client->search($params)->asObject();
+//
+//    $ids = Arr::pluck($response['hits']['hits'],['_id']);
+//
+//    $articles = \App\Models\Article::findMany($ids)
+//        ->sortBy(function ($article) use ($ids) {
+//            return array_search($article->getKey(), $ids);
+//        });
+//
+//
+//    return response()->json($articles);
+});
+
+
 
 //RSS
 //Route::feeds();
 Route::get('/rss',[\App\Http\Controllers\RssReaderController::class,'readRss']);
 
 // FACEBOOK
-Route::group(['prefix'=> 'login/facebook'], function (){
-    Route::get('/',[\App\Http\Controllers\FacebookController::class,'FacebookLogin'])->name('facebook-login');
-    Route::get('/callback',[\App\Http\Controllers\FacebookController::class,'handleProviderFacebookCallback'])->name('facebook-callback');
-});
-//Route::get('/post',[\App\Http\Controllers\FacebookController::class, 'postNews']);
-
-Route::get('/import',[\App\Http\Controllers\FacebookController::class, 'RssArticles']);
-//Route::get('/fb-user',[\App\Http\Controllers\GraphController::class,'retrieveUserProfile']);
-//Route::get('/fb-logout', [\App\Http\Controllers\GraphController::class,'deauthorize']);
-//social media routes
-Route::get('auth/facebook', [FacebookSocialiteController::class, 'redirectToFB']);
-Route::get('login/facebook/callback', [FacebookSocialiteController::class, 'handleCallback']);
-Route::view('/{path?}','welcome')->where('path','.*');

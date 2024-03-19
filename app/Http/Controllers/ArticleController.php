@@ -6,6 +6,7 @@ use App\Models\Article;
 use App\Models\ArticleList;
 use App\Models\Author;
 use App\Repositories\ArticleRepository;
+use Elastic\Elasticsearch\Client;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
@@ -23,10 +24,12 @@ use LaravelIdea\Helper\App\Models\_IH_Author_C;
 class ArticleController extends Controller
 {
     private $service;
+    private $elastic;
 
-    public function __construct()
+    public function __construct(Client $client)
     {
         $this->service = new ImageService();
+        $this->elastic = $client;
     }
 
     /**
@@ -77,6 +80,7 @@ class ArticleController extends Controller
 
         $article->update([
             'title' => $request->title,
+            'slug' => Str::slug($request->title),
             'lead' => $request->lead,
             'body' => $request->body,
             'is_breaking' => $request->is_breaking,
@@ -85,6 +89,9 @@ class ArticleController extends Controller
             'status' => $request->status
         ]);
 
+        if ($article->status === 'P'){
+            $article->elasticsearchUpdate($this->elastic);
+        }
 
         return $article;
     }
@@ -255,7 +262,7 @@ class ArticleController extends Controller
     /**
      * @return LengthAwarePaginator
      */
-    public function getPublishedArticles(): LengthAwarePaginator
+    public function getPublishedArticles()//: LengthAwarePaginator
     {
         return Article::query()
             ->join('article_translations', 'article_translations.article_id', '=', 'articles.id')
