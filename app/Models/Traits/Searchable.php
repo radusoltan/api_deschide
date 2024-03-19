@@ -30,7 +30,7 @@ trait Searchable
             'index' => $this->getSearchIndex(),
             'id' => $this->getId(),
             'body' => [
-                'doc' => $this->toSearchArray()
+                'doc' => [...$this->toSearchArray()]
             ]
         ]);
     }
