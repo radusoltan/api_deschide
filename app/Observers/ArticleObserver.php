@@ -25,7 +25,7 @@ class ArticleObserver
      */
     public function created(Article $article)
     {
-//         $article->elasticsearchIndex($this->elasticsearchClient);
+        //         $article->elasticsearchIndex($this->elasticsearchClient);
     }
 
     public function flash(Article $article)
@@ -56,7 +56,7 @@ class ArticleObserver
      */
     public function deleted(Article $article)
     {
-         $article->elasticsearchDelete($this->elasticsearchClient);
+        $article->elasticsearchDelete($this->elasticsearchClient);
     }
 
     /**
@@ -67,8 +67,7 @@ class ArticleObserver
      */
     public function restored(Article $article)
     {
-
-         $article->elasticsearchIndex($this->elasticsearchClient);
+        $article->elasticsearchIndex($this->elasticsearchClient);
     }
 
     /**
@@ -79,6 +78,6 @@ class ArticleObserver
      */
     public function forceDeleted(Article $article)
     {
-        // $article->elasticsearchDelete($this->elasticsearchClient);
+         $article->elasticsearchDelete($this->elasticsearchClient);
     }
 }

@@ -28,12 +28,9 @@ use App\Search\ElasticsearchRepository;
 */
 
 Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
-//    return $request->user()->load('roles','permissions');
 
-    return response()->json([
-        'user' => $request->user(),
-        'permissions' => $request->user()->permissions()->pluck('name')
-    ]);
+    return $request->user()->load('permissions');
+
 });
 
 Route::post('login',[AuthenticatedSessionController::class,'store']);

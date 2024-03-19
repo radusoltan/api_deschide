@@ -8,10 +8,10 @@ use Elastic\Elasticsearch\Client;
 
 class ArticleTranslationObserver
 {
-//    private $elastic;
-//    public function __construct(Client $elastic){
-//        $this->elastic = $elastic;
-//    }
+        private $elastic;
+        public function __construct(Client $elastic){
+            $this->elastic = $elastic;
+        }
     /**
      * Handle the ArticleTranslation "created" event.
      */
@@ -20,7 +20,7 @@ class ArticleTranslationObserver
         $article = Article::find($articleTranslation->article_id);
 
         if($articleTranslation->status === 'P') {
-//            $article->elasticsearchIndex($this->elastic);
+            $article->elasticsearchIndex($this->elastic);
         }
     }
 
@@ -32,9 +32,7 @@ class ArticleTranslationObserver
         $article = Article::find($articleTranslation->article_id);
 
         if($articleTranslation->status === 'P') {
-//            $article->elasticsearchUpdate($this->elastic);
-        } else {
-//            $article->elasticsearchDelete($this->elastic);
+            $article->elasticsearchUpdate($this->elastic);
         }
     }
 
@@ -44,7 +42,7 @@ class ArticleTranslationObserver
     public function deleted(ArticleTranslation $articleTranslation): void
     {
         $article = Article::find($articleTranslation->article_id);
-//        $article->elasticsearchDelete($this->elastic);
+        $article->elasticsearchDelete($this->elastic);
     }
 
     /**
@@ -55,7 +53,7 @@ class ArticleTranslationObserver
         $article = Article::find($articleTranslation->article_id);
 
         if($articleTranslation->status === 'P') {
-//            $article->elasticsearchIndex($this->elastic);
+            $article->elasticsearchIndex($this->elastic);
         }
     }
 
@@ -65,6 +63,6 @@ class ArticleTranslationObserver
     public function forceDeleted(ArticleTranslation $articleTranslation): void
     {
         $article = Article::find($articleTranslation->article_id);
-//        $article->elasticsearchDelete($this->elastic);
+        $article->elasticsearchDelete($this->elastic);
     }
 }

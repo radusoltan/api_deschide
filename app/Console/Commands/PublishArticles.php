@@ -3,8 +3,10 @@
 namespace App\Console\Commands;
 
 use App\Models\Article;
+use App\Models\ArticleTranslation;
 use Illuminate\Console\Command;
 use Carbon\Carbon;
+use Illuminate\Support\Str;
 
 class PublishArticles extends Command
 {
@@ -27,23 +29,43 @@ class PublishArticles extends Command
      */
     public function handle(): void
     {
-        $articles = Article::join('article_translations','article_translations.article_id','=','articles.id')
-            ->where('article_translations.status','=','S')
+        $translations = ArticleTranslation::where('status',"S")
+            ->whereNotNull('publish_at')
             ->get();
 
-        foreach ($articles as $article){
-
-            $dateToPublish = Carbon::parse($article->publish_at);
+        foreach ($translations as $translation){
+            $dateToPublish = Carbon::parse($translation->publish_at);
             $dateNow = Carbon::now();
-
-            if ($dateToPublish->equalTo($dateNow)) {
-                $article->status = "P";
-                $article->publush_at = null;
-                $article->published_at = $dateNow;
-                $article->save();
+            if ($dateToPublish->format('H') == Carbon::now()->format('H') && $dateToPublish->format('i') == Carbon::now()->format('i')) {
+                app()->setLocale($translation->locale);
+                $translation->update([
+                    'status' => 'P',
+                    'publish_at' => null,
+                    'published_at' => $dateNow
+                ]);
             }
-
         }
+
+//        foreach ($articles as $article){
+//
+//            $dateToPublish = Carbon::parse($article->publish_at);
+//            $dateNow = Carbon::now();
+//
+//            $publishAt = Carbon::parse($article->publish_at);
+//
+//            // Verifică dacă ora și minutul din publish_at sunt aceleași cu cele curente
+//            if ($dateToPublish->format('H') == Carbon::now()->format('H') && $dateToPublish->format('i') == Carbon::now()->format('i')) {
+//                // Aceeași oră și minut
+//
+//                app()->setLocale($article->locale);
+//                $article->update([
+//                   'status' => 'P',
+//                   'publish_at' => null,
+//                   'published_at' => $publishAt
+//                ]);
+//            }
+//
+//        }
 
     }
 }

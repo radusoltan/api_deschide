@@ -11,7 +11,7 @@ use Elastic\Elasticsearch\Exception\ServerResponseException;
 class CategoryObserver
 {
     public function __construct(
-//        private Client $elasticsearchClient
+        //        private Client $elasticsearchClient
     )
     {
     }

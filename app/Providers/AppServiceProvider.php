@@ -28,10 +28,13 @@ class AppServiceProvider extends ServiceProvider
 //
 //        });
 //
-//        $this->bindSearchClient();
+
+        $this->bindSearchClient();
+    }
 
         $this->app->bind(Client::class, function (){
             return ClientBuilder::create()
+
                 ->setHosts(['https://localhost:9200'])
                 ->setBasicAuthentication(config('services.search.user'),config('services.search.pass'))
                 ->setCABundle(base_path().'/http_ca.crt')

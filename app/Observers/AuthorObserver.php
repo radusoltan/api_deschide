@@ -7,9 +7,9 @@ use Elastic\Elasticsearch\Client;
 
 class AuthorObserver
 {
-//    public function __construct(private Client $elasticsearchClient)
-//    {
-//    }
+    //    public function __construct(private Client $elasticsearchClient)
+    //    {
+    //    }
     /**
      * Handle the Author "created" event.
      *
