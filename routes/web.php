@@ -47,7 +47,7 @@ Route::get('categories',function (){
 
 Route::get('/',function(\Elastic\Elasticsearch\Client $client){
     $locale = request()->get('locale');
-    dump('here');
+//    dump('here');
 
 //    $params = [
 //        'index' => 'articles',

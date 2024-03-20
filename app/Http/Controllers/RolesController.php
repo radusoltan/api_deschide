@@ -15,7 +15,7 @@ class RolesController extends Controller
     public function show(Role $role)
     {
 
-        return $role;
+        return $role->load('permissions');
 
     }
 
@@ -25,7 +25,11 @@ class RolesController extends Controller
             'name' => 'required'
         ]);
 
-        $permissions = Permission::findMany($request->get('roles'))->pluck('id','id');
+
+
+        $permissions = Permission::findMany($request->get('permissions'));
+
+
         $role = Role::create([
             'name' => $request->get('name'),
             "guard_name" => 'web'
@@ -42,18 +46,18 @@ class RolesController extends Controller
 
         request()->validate([
             'name' => ['required','string'],
-            'selectedPermissions' => ['array']
+            'permissions' => ['array']
         ]);
 
         $role->update([
             'name' => request('name')
         ]);
 
-        $permissions = Permission::findMany(request('selectedPermissions'))->pluck('id','id');
+        $permissions = Permission::findMany(request('permissions'))->pluck('id','id');
         // dump($permissions);
         $role->syncPermissions($permissions);
 
-        return $role->with(['permissions'])->get();
+        return $role->load('permissions');
     }
 
     public function destroy(Role $role)

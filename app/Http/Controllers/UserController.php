@@ -32,9 +32,8 @@ class UserController extends Controller
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'confirmed'],
+//            'password' => ['required', 'confirmed'],
         ]);
-
 
         $user = User::create([
             'name' => $request->name,
@@ -46,20 +45,19 @@ class UserController extends Controller
            $user->assignRole($request->get('selectedRoles'));
         }
 
-
-
-        return $user->with('roles')->get();
+        return $user->load('roles.permissions');
     }
 
     /**
      * Display the specified resource.
      *
      * @param  \App\Models\User  $user
-     * @return \Illuminate\Http\Response
+     *
+     * @return \App\Models\User
      */
     public function show(User $user)
     {
-        //
+        return $user->load('roles.permissions');
     }
 
 
@@ -68,11 +66,21 @@ class UserController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\User  $user
-     * @return \Illuminate\Http\Response
+     *
+     * @return \App\Models\User
      */
     public function update(Request $request, User $user)
     {
-        //
+        $user->update([
+            'name' => $request->get('name'),
+            'email' => $request->get('email')
+        ]);
+
+        if ($request->has('selectedRoles')){
+            $user->assignRole($request->get('selectedRoles'));
+        }
+
+        return $user;
     }
 
     /**
