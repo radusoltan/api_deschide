@@ -29,7 +29,7 @@ use App\Search\ElasticsearchRepository;
 
 Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
 
-    return $request->user()->load('permissions');
+    return $request->user()->load('permissions', 'roles.permissions');
 
 });
 
@@ -140,7 +140,7 @@ Route::group(['middleware'=>['auth:sanctum']], function(){
 
     // Important articles list
     Route::get('/lists',[\App\Http\Controllers\ArticlesListController::class, 'getLists']);
-    Route::post('/list/create',[\App\Http\Controllers\ArticlesListController::class, 'createArticlesList']);
+    Route::post('/lists',[\App\Http\Controllers\ArticlesListController::class, 'createArticlesList']);
     Route::post('/list/{articleList}/attach',[\App\Http\Controllers\ArticlesListController::class, 'addArticlesToList']);
     Route::post('/list/{articleList}/detach',[\App\Http\Controllers\ArticlesListController::class,'detachArticleFromList']);
 

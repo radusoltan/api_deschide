@@ -26,6 +26,7 @@ class AuthenticatedSessionController extends Controller
 
         return response()->json([
             'user' => $request->user(),
+            'role' => $request->user()->roles()->with('permissions')->get(),
             'token' => $request->user()->createToken('deshideApi')->plainTextToken
         ]);
     }
