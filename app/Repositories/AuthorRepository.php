@@ -36,8 +36,16 @@ class AuthorRepository
                 'query' => [
                     'bool' => [
                         'must' => [
-                            ['match' => ['translations.full_name' => $query]],
-                            ['match' => ['translations.locale' => $locale]],
+                            [
+                                'term' => [
+                                    'translations.locale' => 'ro'
+                                ]
+                            ],
+                            [
+                                'match' => [
+                                    'translations.full_name' => request('q')
+                                ]
+                            ]
                         ]
                     ]
                 ]
