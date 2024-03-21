@@ -55,6 +55,7 @@ class AuthorController extends Controller
         app()->setLocale($request->get('locale'));
 
         $author = Author::create([
+            'email' => $request->get('email'),
             'first_name' => $request->get('first_name'),
             'last_name' => $request->get('last_name'),
             'full_name' => $request->get('first_name').' '.$request->get('last_name'),
@@ -146,6 +147,7 @@ class AuthorController extends Controller
             app()->setLocale($request->get('locale'));
 
             $author = Author::create([
+                'email' => $request->get('email'),
                 'first_name' => $request->get('first_name'),
                 'last_name' => $request->get('last_name'),
                 'full_name' => $request->get('first_name').' '.$request->get('last_name'),

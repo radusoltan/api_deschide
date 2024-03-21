@@ -7,9 +7,9 @@ use Elastic\Elasticsearch\Client;
 
 class AuthorObserver
 {
-    //    public function __construct(private Client $elasticsearchClient)
-    //    {
-    //    }
+        public function __construct(private Client $elasticsearchClient)
+        {
+        }
     /**
      * Handle the Author "created" event.
      *
@@ -18,7 +18,7 @@ class AuthorObserver
      */
     public function created(Author $author): void
     {
-        // $author->elasticsearchIndex($this->elasticsearchClient);
+         $author->elasticsearchIndex($this->elasticsearchClient);
     }
 
     /**
@@ -29,7 +29,7 @@ class AuthorObserver
      */
     public function updated(Author $author): void
     {
-        // $author->elasticsearchUpdate($this->elasticsearchClient);
+         $author->elasticsearchUpdate($this->elasticsearchClient);
     }
 
     /**
@@ -40,7 +40,7 @@ class AuthorObserver
      */
     public function deleted(Author $author): void
     {
-        // $author->elasticsearchDelete($this->elasticsearchClient);
+         $author->elasticsearchDelete($this->elasticsearchClient);
     }
 
     /**

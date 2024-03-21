@@ -74,7 +74,5 @@ class ReindexCommand extends Command
 
         $this->output->write('Done !');
 
-
-
     }
 }

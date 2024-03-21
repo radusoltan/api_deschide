@@ -45,25 +45,25 @@ class AuthorsTableSeeder extends Seeder
             'slug' => Str::slug('Deschide Новости')
         ]);
 
-        for ($i=0;$i<100;$i++){
-
-            app()->setLocale('ro');
-
-            $email = $faker->unique()->safeEmail;
-            $firstName = $faker->firstName;
-            $lastName = $faker->lastName;
-            $facebook = Str::slug($firstName.' '.$lastName);
-            $fullName = $firstName.' '.$lastName;
-
-            $author = Author::create([
-                'email' => $email,
-                'facebook' => $facebook,
-                'first_name' => $firstName,
-                'last_name' => $lastName,
-                'full_name' => $fullName,
-                'slug' => Str::slug($fullName)
-            ]);
-
-        }
+//        for ($i=0;$i<100;$i++){
+//
+//            app()->setLocale('ro');
+//
+//            $email = $faker->unique()->safeEmail;
+//            $firstName = $faker->firstName;
+//            $lastName = $faker->lastName;
+//            $facebook = Str::slug($firstName.' '.$lastName);
+//            $fullName = $firstName.' '.$lastName;
+//
+//            Author::create([
+//                'email' => $email,
+//                'facebook' => $facebook,
+//                'first_name' => $firstName,
+//                'last_name' => $lastName,
+//                'full_name' => $fullName,
+//                'slug' => Str::slug($fullName)
+//            ]);
+//
+//        }
     }
 }
