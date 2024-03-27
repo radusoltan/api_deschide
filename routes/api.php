@@ -140,34 +140,16 @@ Route::group(['middleware'=>['auth:sanctum']], function(){
 
     // Important articles list
     Route::get('/lists',[\App\Http\Controllers\ArticlesListController::class, 'getLists']);
+    Route::get('/lists/{list}',[\App\Http\Controllers\ArticlesListController::class, 'getList']);
     Route::post('/lists',[\App\Http\Controllers\ArticlesListController::class, 'createArticlesList']);
     Route::post('/list/{articleList}/attach',[\App\Http\Controllers\ArticlesListController::class, 'addArticlesToList']);
     Route::post('/list/{articleList}/detach',[\App\Http\Controllers\ArticlesListController::class,'detachArticleFromList']);
+    Route::post('/lists/{list}/reorder',[\App\Http\Controllers\ArticlesListController::class,'reorderArticles']);
+    Route::get('/lists/{article}/article',[\App\Http\Controllers\ArticlesListController::class,'articleLists']);
 
     // ElasticSearch
     Route::get('/elastic',[\App\Http\Controllers\ElasticSearchController::class,'getIndexes']);
 
-});
-//////// V2
-Route::group(['middleware' => ['auth:sanctum'], 'prefix' => 'v2'], function (){
-    //category routes
-    Route::group(['prefix' => 'categories'],function (){
-        //
-        Route::get('/',[App\Http\Controllers\V2\Admin\CategoryController::class,'index']);
-    });
-
-    //articles routes
-    Route::group(['prefix' => 'articles'],function (){
-        //
-        Route::get('/',[App\Http\Controllers\V2\Admin\ArticleController::class,'index']);
-    });
-
-});
-
-// Public routes
-Route::group(['prefix' => 'v2/public'],function (){
-    Route::get('/', [\App\Http\Controllers\V2\Public\HomePageController::class,'getInitialProps']);
-    Route::get('/categories', [\App\Http\Controllers\V2\Admin\CategoryController::class,'getCategories']);
 });
 
 

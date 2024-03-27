@@ -22,7 +22,7 @@ class DatabaseSeeder extends Seeder
             ArticleTableSeeder::class,
             AuthorsTableSeeder::class,
             RenditionTableSeeder::class,
-            ImageSeeder::class
+//            ImageSeeder::class
         ]);
     }
 }

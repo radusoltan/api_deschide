@@ -19,6 +19,13 @@ use Illuminate\Http\Request;
 |
 */
 
+Route::get('/', function(){
+
+    $lipsum = Http::get('https://loripsum.net/api/1');
+    dump($lipsum->body());
+
+});
+
 
 Route::get('test', function (){
 
@@ -45,47 +52,10 @@ Route::get('categories',function (){
     return \App\Models\Category::all();
 });
 
-Route::get('/',function(\Elastic\Elasticsearch\Client $client){
-    $locale = request()->get('locale');
-//    dump('here');
-
-//    $params = [
-//        'index' => 'articles',
-//        'type' => '_doc',
-//        'size' => 10,
-//        'body'   => [
-//            'query' => [
-//                'match' => [
-//                    "translations.locale" => $locale
-//                ]
-//            ],
-//            'sort' => [
-//                'created_at' => [
-//                    'order' => 'desc',
-//                    'unmapped_type' => 'date', // Optional, if the field type is not explicitly mapped
-//                ],
-//            ],
-//        ]
-//    ];
-//
-//    $response = $client->search($params)->asArray();
-//    $obj = $client->search($params)->asObject();
-//
-//    $ids = Arr::pluck($response['hits']['hits'],['_id']);
-//
-//    $articles = \App\Models\Article::findMany($ids)
-//        ->sortBy(function ($article) use ($ids) {
-//            return array_search($article->getKey(), $ids);
-//        });
-//
-//
-//    return response()->json($articles);
-});
 
 
 
 //RSS
-//Route::feeds();
-Route::get('/rss',[\App\Http\Controllers\RssReaderController::class,'readRss']);
+Route::feeds();
 
 // FACEBOOK
