@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(\App\Models\Article::class);
             $table->foreignIdFor(\App\Models\ArticleList::class);
-            $table->timestamps();
+            $table->integer('order')->nullable('true');
         });
     }
 

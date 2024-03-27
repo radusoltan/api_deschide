@@ -13,13 +13,16 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Feed\Feedable;
+use Spatie\Feed\FeedItem;
 
-class Article extends Model implements TranslatableContract
+class Article extends Model implements TranslatableContract, Feedable
 {
     use HasFactory;
     use Translatable;
     use Searchable;
     use SoftDeletes;
+
 
 
     public array $translatedAttributes = ['title', 'slug', 'lead', 'body', 'status', 'published_at','publish_at'];
@@ -101,6 +104,16 @@ class Article extends Model implements TranslatableContract
         return $this->belongsToMany($this, 'related_articles', 'article_id', 'related_id');
     }
 
+    public function lists()
+    {
+        return $this->belongsToMany(ArticleList::class, 'featured_articles_list', 'article_id', 'article_list_id');
+    }
+
+    public function featuredArticleLists()
+    {
+        return $this->hasMany(FeaturedArticlesList::class);
+    }
+
     public function gallery(): HasOne
     {
         return $this->hasOne(Gallery::class);
@@ -138,6 +151,23 @@ class Article extends Model implements TranslatableContract
     {
 
         return $this->load('images','authors', 'images.thumbnails','visits')->toArray();
+    }
+
+    public function toFeedItem(): FeedItem
+    {
+        return FeedItem::create([
+            'id' => $this->id,
+            'title' => $this->title,
+            'summary' => 'Some description text',
+            'updated' => $this->updated_at,
+            'link' => 'http://api.deschide.local',
+            'authorName' => 'Author Name',
+        ]);
+    }
+
+    public static function getFeedItems()
+    {
+        return Article::all();
     }
 
 }

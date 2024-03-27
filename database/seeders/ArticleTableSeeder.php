@@ -19,7 +19,24 @@ class ArticleTableSeeder extends Seeder
      */
     public function run()
     {
-        for ($i=0;$i<1000;$i++){
+        for ($i=0;$i<100;$i++){
+            /**
+             * (integer) - The number of paragraphs to generate.
+             * short, medium, long, verylong - The average length of a paragraph.
+             * decorate - Add bold, italic and marked text.
+             * link - Add links.
+             * ul - Add unordered lists.
+             * ol - Add numbered lists.
+             * dl - Add description lists.
+             * bq - Add blockquotes.
+             * code - Add code samples.
+             * headers - Add headers.
+             * allcaps - Use ALL CAPS.
+             * prude - Prude version.
+             * plaintext - Return plain text, no HTML.
+             */
+            $body = Http::get('https://loripsum.net/api/10/headers/link/ul/ol/bq/decorate');
+            $lead = Http::get('https://loripsum.net/api/1/link/decorate');
             app()->setLocale('ro');
             $title = '// RO //'.fake()->sentence();
 
@@ -27,8 +44,8 @@ class ArticleTableSeeder extends Seeder
                 'category_id' => fake()->randomKey(Category::pluck('id','id')->all()),
                 'title' => $title,
                 'slug' => Str::slug($title),
-                'lead' => fake()->paragraph(),
-                'body' => fake()->paragraph(),
+                'lead' => $lead->body(),
+                'body' => $body->body(),
                 'status' => "P"
             ]);
 
@@ -37,8 +54,8 @@ class ArticleTableSeeder extends Seeder
             $article->update([
                 'title' => $title,
                 'slug' => Str::slug($title),
-                'lead' => fake()->paragraph(),
-                'body' => fake()->paragraph(),
+                'lead' => $lead->body(),
+                'body' => $body->body(),
                 'status' => "P"
             ]);
             app()->setLocale('ru');
@@ -46,42 +63,12 @@ class ArticleTableSeeder extends Seeder
             $article->update([
                 'title' => $title,
                 'slug' => Str::slug($title),
-                'lead' => fake()->paragraph(),
-                'body' => fake()->paragraph(),
+                'lead' => $lead->body(),
+                'body' => $body->body(),
                 'status' => "P"
             ]);
 
         }
-
-//        foreach (config('translatable.locales') as $locale){
-//            app()->setLocale($locale);
-//
-//            $response = Http::get('https://deschide.md/api/articles?items_per_page=5&language='.app()->getLocale());
-//            $items = $response->json();
-//
-//            foreach ($items['items'] as $item){
-//                $category = Category::where('old_number', $item["section"]["number"])->first();
-//
-//                $article = Article::where('old_number',$item['number'])->first();
-//
-//                $publish_at_date = Carbon::parse($item['published']);
-//
-//                if (!$article){
-//                    if (isset($item['fields']['Continut'])){
-//                        $article = Article::create([
-//                            'category_id' => $category->getId(),
-//                            'title' => $item['title'],
-//                            'slug' => Str::slug($item['title']),
-//                            'lead' => $item['fields']['lead'] ?? '',
-//                            'body' => $item['fields']['Continut'],
-//                            'status' => $item['status']==='Y' ? 'P' : 'another',
-//                            'old_number' => $item['number'],
-//                            'published_at' => $publish_at_date
-//                        ]);
-//                    }
-//                }
-//            }
-//        }
 
     }
 }

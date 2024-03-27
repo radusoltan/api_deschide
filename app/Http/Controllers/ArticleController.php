@@ -39,7 +39,7 @@ class ArticleController extends Controller
      */
     public function index()
     {
-        return Article::all();
+        return Article::paginate(10);
     }
 
     /**
@@ -64,7 +64,7 @@ class ArticleController extends Controller
 
 //        app()->setLocale(request('locale'));
         $article->vzt()->increment();
-        return $article->load('visits','images', 'authors');
+        return $article->load('visits','images', 'authors', 'lists');
     }
 
     /**
